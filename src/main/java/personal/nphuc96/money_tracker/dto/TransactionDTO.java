@@ -13,7 +13,7 @@ import java.time.LocalDate;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
-public class MoneyEventDTO {
+public class TransactionDTO {
 
     private Integer id;
 
@@ -26,5 +26,5 @@ public class MoneyEventDTO {
 
     private BigDecimal money;
 
-    private EventGroupDTO eventGroup;
+    private TransactionGroupDTO transactionGroup;
 }

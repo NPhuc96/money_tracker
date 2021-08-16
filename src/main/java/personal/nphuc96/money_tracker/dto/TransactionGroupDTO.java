@@ -6,7 +6,7 @@ import lombok.Data;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
-public class EventGroupDTO {
+public class TransactionGroupDTO {
 
     private Integer id;
 

@@ -1,4 +1,4 @@
-package personal.bedailyneeds.exception.model;
+package personal.nphuc96.money_tracker.exception.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;

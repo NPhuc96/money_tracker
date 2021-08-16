@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 import personal.nphuc96.money_tracker.entity.TransactionGroup;
 
 @Repository
-public interface EventGroupDAO extends JpaRepository<TransactionGroup, Integer> {
+public interface TransactionGroupDAO extends JpaRepository<TransactionGroup, Integer> {
 
 }

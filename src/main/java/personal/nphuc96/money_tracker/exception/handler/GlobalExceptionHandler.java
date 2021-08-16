@@ -1,13 +1,12 @@
-package personal.bedailyneeds.exception.handler;
+package personal.nphuc96.money_tracker.exception.handler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import personal.bedailyneeds.exception.*;
-import personal.bedailyneeds.exception.model.ExceptionResponse;
+import personal.nphuc96.money_tracker.exception.*;
+import personal.nphuc96.money_tracker.exception.model.ExceptionResponse;
 
-import javax.mail.MessagingException;
 import java.time.LocalDateTime;
 
 @ControllerAdvice
@@ -63,13 +62,5 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 
-    @ExceptionHandler(MessagingException.class)
-    public ResponseEntity<ExceptionResponse> MessagingException(MessagingException ex) {
-        ExceptionResponse response = new ExceptionResponse();
-        response.setErrorCode("UNPROCESSABLE");
-        response.setErrorMessage(ex.getMessage());
-        response.setTimestamp(LocalDateTime.now());
 
-        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
-    }
 }

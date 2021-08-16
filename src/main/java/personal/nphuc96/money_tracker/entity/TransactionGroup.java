@@ -6,27 +6,27 @@ import javax.persistence.*;
 
 import static javax.persistence.GenerationType.SEQUENCE;
 
-@Entity(name = "EventGroup")
+@Entity(name = "TransactionGroup")
 @Table(
-        name = "event_group",
+        name = "transaction_group",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "event_group_name_unique",
+                        name = "transaction_group_name_unique",
                         columnNames = "name")
         }
 )
 @Data
-public class EventGroup {
+public class TransactionGroup {
 
     @Id
     @SequenceGenerator(
-            name = "event_group_sequence",
-            sequenceName = "event_group_sequence",
+            name = "transaction_group_sequence",
+            sequenceName = "transaction_group_sequence",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = SEQUENCE,
-            generator = "event_group_sequence"
+            generator = "transaction_group_sequence"
     )
     private Integer id;
 

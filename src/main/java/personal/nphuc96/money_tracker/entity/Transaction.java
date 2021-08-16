@@ -11,20 +11,20 @@ import static javax.persistence.CascadeType.REFRESH;
 import static javax.persistence.GenerationType.SEQUENCE;
 
 
-@Entity(name = "MoneyEvent")
+@Entity(name = "Transaction")
 @Data
-@Table(name = "money_event")
-public class MoneyEvent {
+@Table(name = "transactions")
+public class Transaction {
 
     @Id
     @SequenceGenerator(
-            name = "money_event_sequence",
-            sequenceName = "money_event_sequence",
+            name = "transaction_sequence",
+            sequenceName = "transaction_sequence",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = SEQUENCE,
-            generator = "money_event_sequence"
+            generator = "transaction_sequence"
 
     )
     @Column(
@@ -57,6 +57,6 @@ public class MoneyEvent {
     @OneToOne(
             cascade = {MERGE, REFRESH}
     )
-    @JoinColumn(name = "event_group_id", referencedColumnName = "id")
-    private EventGroup eventGroup;
+    @JoinColumn(name = "transaction_group_id", referencedColumnName = "id")
+    private TransactionGroup transactionGroup;
 }

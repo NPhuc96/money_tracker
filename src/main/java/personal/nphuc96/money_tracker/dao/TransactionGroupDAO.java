@@ -7,4 +7,5 @@ import personal.nphuc96.money_tracker.entity.TransactionGroup;
 @Repository
 public interface TransactionGroupDAO extends JpaRepository<TransactionGroup, Integer> {
 
+
 }

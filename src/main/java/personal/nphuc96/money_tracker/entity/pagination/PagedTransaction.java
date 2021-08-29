@@ -18,7 +18,7 @@ public class PagedTransaction {
 
     private Boolean next;
 
-    private List<TransactionDTO> transaction;
+    private List<TransactionDTO> transactions;
 
 
 }

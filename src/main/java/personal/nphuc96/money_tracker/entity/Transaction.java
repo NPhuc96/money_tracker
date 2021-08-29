@@ -13,7 +13,7 @@ import static javax.persistence.GenerationType.SEQUENCE;
 
 @Entity(name = "Transaction")
 @Data
-@Table(name = "transactions")
+@Table(name = "transaction")
 public class Transaction {
 
     @Id

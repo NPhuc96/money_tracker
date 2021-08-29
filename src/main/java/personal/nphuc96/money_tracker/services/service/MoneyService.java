@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import personal.nphuc96.money_tracker.dao.TransactionDAO;
 import personal.nphuc96.money_tracker.dao.TransactionGroupDAO;
@@ -70,7 +71,8 @@ public class MoneyService implements MoneyServices {
 
     @Override
     public List<TransactionGroupDTO> allGroup() {
-        List<TransactionGroup> transactionGroupList = transactionGroupDAO.findAll();
+        List<TransactionGroup> transactionGroupList =
+                transactionGroupDAO.findAll(Sort.by(Sort.Direction.ASC, "name"));
         return transactionGroupList
                 .stream().map(modelMapper::transactionGroupToDto)
                 .collect(Collectors.toList());
@@ -91,7 +93,7 @@ public class MoneyService implements MoneyServices {
                 .totalPages(totalPages)
                 .prev(currentPage - 1 >= 1)
                 .next(currentPage + 1 <= totalPages)
-                .transaction(transactionDTOList)
+                .transactions(transactionDTOList)
                 .build();
     }
 

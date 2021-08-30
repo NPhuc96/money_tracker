@@ -1,6 +1,9 @@
 package personal.nphuc96.money_tracker.security.user;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,12 +13,12 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SecurityUser implements UserDetails {
 
-    private final AppUser appUser;
-    private Boolean isEnabled;
-    private Boolean isNonLocked;
-
+    private AppUser appUser;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -37,12 +40,12 @@ public class SecurityUser implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return isEnabled;
+        return appUser.getIsEnabled();
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return isNonLocked;
+        return appUser.getIsNonLocked();
     }
 
     @Override

@@ -1,6 +1,9 @@
 package personal.nphuc96.money_tracker.entity.app_user;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
@@ -11,6 +14,9 @@ import static javax.persistence.GenerationType.SEQUENCE;
 @Entity(name = "AppUser")
 @Table(name = "app_user")
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class AppUser {
 
     @Id
@@ -41,6 +47,18 @@ public class AppUser {
             nullable = false
     )
     private String password;
+
+    @Column(
+            name = "is_enabled",
+            nullable = false
+    )
+    private Boolean isEnabled;
+
+    @Column(
+            name = "is_non_locked",
+            nullable = false
+    )
+    private Boolean isNonLocked;
 
     @ManyToMany(cascade = {PERSIST, REFRESH, MERGE})
     @JoinTable(

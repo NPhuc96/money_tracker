@@ -21,11 +21,8 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtUtil {
 
-    @Value("${jwt.expired-time}")
-    private Integer EXPIRED_TIME;
-
-   /* @Value("${jwt.refresh-expired-time}")
-    private final Integer REFRESH_EXPIRED_TIME;*/
+    @Value("${jwt.expired.time}")
+    private Integer expiredTime;
 
     @Value("${jwt.signing.key}")
     private String signature;
@@ -47,7 +44,7 @@ public class JwtUtil {
         try {
             return JWT.create()
                     .withIssuer("Auth0 - Money Tracker Application")
-                    .withExpiresAt(expiredTime(EXPIRED_TIME))
+                    .withExpiresAt(expiredTime(expiredTime))
                     .withSubject(user.getUsername())
                     .withIssuedAt(new Date())
                     .withClaim("Roles", Collections.singletonList(user.getAuthorities()))

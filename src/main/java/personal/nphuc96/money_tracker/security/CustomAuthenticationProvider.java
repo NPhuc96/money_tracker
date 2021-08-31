@@ -7,9 +7,10 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import personal.nphuc96.money_tracker.security.user.CustomUserDetailsService;
+import personal.nphuc96.money_tracker.security.user.SecurityUser;
 
 @Component
 @RequiredArgsConstructor
@@ -17,17 +18,17 @@ import personal.nphuc96.money_tracker.security.user.CustomUserDetailsService;
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     private final CustomUserDetailsService customUserDetailsService;
-    private final UserManagementConfig userManagementConfig;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String email = authentication.getName();
         String password = authentication.getCredentials().toString();
         log.info("Username : {} , password : {}", email, password);
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
-        if (userManagementConfig.passwordEncoder().matches(password, userDetails.getPassword())) {
+        SecurityUser securityUser = (SecurityUser) customUserDetailsService.loadUserByUsername(email);
+        if (passwordEncoder.matches(password, securityUser.getPassword())) {
             log.info("Found user, return UsernamePasswordAuthenticationToken object");
-            return new UsernamePasswordAuthenticationToken(email, null, userDetails.getAuthorities());
+            return new UsernamePasswordAuthenticationToken(securityUser, password, securityUser.getAuthorities());
         }
         throw new BadCredentialsException("Something went wrong");
     }
@@ -36,4 +37,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     public boolean supports(Class<?> type) {
         return UsernamePasswordAuthenticationToken.class.isAssignableFrom(type);
     }
+
+
 }

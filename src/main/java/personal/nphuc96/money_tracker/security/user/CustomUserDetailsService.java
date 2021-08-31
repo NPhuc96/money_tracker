@@ -1,17 +1,17 @@
 package personal.nphuc96.money_tracker.security.user;
 
-import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import personal.nphuc96.money_tracker.dao.AppUserDAO;
 import personal.nphuc96.money_tracker.entity.app_user.AppUser;
 
 import java.util.Optional;
 
-@Component
-@Data
+@Service
+@RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final AppUserDAO appUserDAO;

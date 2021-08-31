@@ -1,9 +1,6 @@
 package personal.nphuc96.money_tracker.security.user;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,13 +9,11 @@ import personal.nphuc96.money_tracker.entity.app_user.AppUser;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-@Data
-@Builder
-@NoArgsConstructor
+
 @AllArgsConstructor
 public class SecurityUser implements UserDetails {
 
-    private AppUser appUser;
+    private final AppUser appUser;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

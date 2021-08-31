@@ -60,7 +60,7 @@ public class AppUser {
     )
     private Boolean isNonLocked;
 
-    @ManyToMany(cascade = {PERSIST, REFRESH, MERGE})
+    @ManyToMany(cascade = {PERSIST, REFRESH, MERGE}, fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role",
             joinColumns = @JoinColumn(name = "app_user_id"),

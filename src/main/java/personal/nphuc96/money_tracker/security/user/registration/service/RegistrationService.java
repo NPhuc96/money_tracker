@@ -3,6 +3,7 @@ package personal.nphuc96.money_tracker.security.user.registration.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import personal.nphuc96.money_tracker.dao.AppUserDAO;
@@ -11,7 +12,6 @@ import personal.nphuc96.money_tracker.entity.app_user.AppUser;
 import personal.nphuc96.money_tracker.exception.BadRequestException;
 import personal.nphuc96.money_tracker.exception.ResourceAlreadyExists;
 import personal.nphuc96.money_tracker.exception.ResourceNotFoundException;
-import personal.nphuc96.money_tracker.security.UserManagementConfig;
 import personal.nphuc96.money_tracker.security.user.registration.RegistrationRequest;
 import personal.nphuc96.money_tracker.security.user.registration.RegistrationServices;
 import personal.nphuc96.money_tracker.security.user.registration.confirmation.ConfirmationToken;
@@ -31,7 +31,7 @@ public class RegistrationService implements RegistrationServices {
 
     private final ConfirmationTokenService confirmationTokenService;
     private final AppUserDAO appUserDAO;
-    private final UserManagementConfig userManagementConfig;
+    private final PasswordEncoder passwordEncoder;
     private final MailService mailService;
     private final RoleDAO roleDAO;
     @Value("${mail.expired.time}")
@@ -72,7 +72,6 @@ public class RegistrationService implements RegistrationServices {
 
     private boolean isEmailExisted(String email) {
         Optional<AppUser> appUser = appUserDAO.findByEmail(email);
-        log.info("Found {}, and Is Present : {}", appUser.toString(), appUser.isPresent());
         return appUser.isEmpty();
     }
 
@@ -91,7 +90,7 @@ public class RegistrationService implements RegistrationServices {
     private AppUser initialAppUser(RegistrationRequest request) {
         return AppUser.builder()
                 .email(request.getEmail())
-                .password(userManagementConfig.passwordEncoder().encode(request.getPassword()))
+                .password(passwordEncoder.encode(request.getPassword()))
                 .isEnabled(false)
                 .isNonLocked(false)
                 .roles(roleDAO.findByName("USER"))

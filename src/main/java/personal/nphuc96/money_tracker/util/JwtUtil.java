@@ -6,22 +6,22 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 import personal.nphuc96.money_tracker.security.user.SecurityUser;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 @Log4j2
 @Component
-@RequiredArgsConstructor
 public class JwtUtil {
 
-    @Value("${jwt.expired.time}")
+    @Value("${jwt.expiration.time}")
     private Integer expiredTime;
 
     @Value("${jwt.signing.key}")
@@ -40,14 +40,19 @@ public class JwtUtil {
         return calendar.getTime();
     }
 
-    public String createToken(SecurityUser user) {
+    public String createToken(SecurityUser user, HttpServletRequest request) {
         try {
             return JWT.create()
                     .withIssuer("Auth0 - Money Tracker Application")
                     .withExpiresAt(expiredTime(expiredTime))
                     .withSubject(user.getUsername())
                     .withIssuedAt(new Date())
-                    .withClaim("Roles", Collections.singletonList(user.getAuthorities()))
+                    .withIssuer(request.getRequestURL().toString())
+                    .withClaim("Roles",
+                            user.getAuthorities()
+                                    .stream()
+                                    .map(GrantedAuthority::getAuthority)
+                                    .collect(Collectors.toList()))
                     .sign(getAlgorithm());
         } catch (JWTCreationException exception) {
             throw new JWTCreationException("Can not create new token", exception.getCause());

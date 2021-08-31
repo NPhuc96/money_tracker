@@ -1,8 +1,7 @@
 package personal.nphuc96.money_tracker.security.filters;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,17 +18,21 @@ import java.io.IOException;
 
 
 @Log4j2
-@AllArgsConstructor
-@NoArgsConstructor
 public class InitialAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    private AuthenticationManager manager;
+    private final AuthenticationManager manager;
+    @Autowired
     private JwtUtil jwtUtil;
+
+    public InitialAuthenticationFilter(AuthenticationManager manager) {
+        this.manager = manager;
+    }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        String email = request.getHeader("email");
-        String password = request.getHeader("password");
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+        log.info("Trying to access with email : {}, password : {}", email, password);
         Authentication authentication = new UsernamePasswordAuthenticationToken(email, password);
         return manager.authenticate(authentication);
 
@@ -38,10 +41,16 @@ public class InitialAuthenticationFilter extends UsernamePasswordAuthenticationF
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication auth) throws IOException, ServletException {
         SecurityUser user = (SecurityUser) auth.getPrincipal();
-        log.info("Get security user object : {} from Authentication object", user.toString());
-        String token = jwtUtil.createToken(user);
-        log.info("Generated new token for user : {}", user.toString());
+        log.info("Get SecurityUser from Authentication object : {}", user.toString());
+        String token = jwtUtil.createToken(user, request);
+        // log.info("Generated new token for user : {}", user.toString());
         response.setHeader("access_token", token);
+    }
+
+    @Override
+    @Autowired
+    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+        super.setAuthenticationManager(authenticationManager);
     }
 
 

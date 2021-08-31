@@ -11,9 +11,12 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.session.SessionManagementFilter;
 import personal.nphuc96.money_tracker.security.filters.CustomCorsFilter;
 import personal.nphuc96.money_tracker.security.filters.InitialAuthenticationFilter;
+import personal.nphuc96.money_tracker.security.filters.InitialAuthorizationFilter;
+import personal.nphuc96.money_tracker.util.JwtUtil;
 
 @EnableWebSecurity
 @Configuration
@@ -24,6 +27,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CustomAuthenticationProvider customAuthenticationProvider;
     private final CustomCorsFilter corsFilter;
+    private final JwtUtil jwtUtil;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -38,7 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests().anyRequest().authenticated();
         http.addFilter(initialAuthenticationFilter());
-
+        http.addFilterBefore(new InitialAuthorizationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
     }
 
@@ -64,7 +68,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public InitialAuthenticationFilter initialAuthenticationFilter() throws Exception {
         final InitialAuthenticationFilter filter =
-                new InitialAuthenticationFilter(authenticationManager());
+                new InitialAuthenticationFilter(authenticationManager(), jwtUtil);
         filter.setFilterProcessesUrl("/api/login");
 
         return filter;

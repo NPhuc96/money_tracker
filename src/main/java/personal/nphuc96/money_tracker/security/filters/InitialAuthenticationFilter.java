@@ -1,5 +1,6 @@
 package personal.nphuc96.money_tracker.security.filters;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,15 +19,12 @@ import java.io.IOException;
 
 
 @Log4j2
+@AllArgsConstructor
 public class InitialAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager manager;
-    @Autowired
-    private JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
-    public InitialAuthenticationFilter(AuthenticationManager manager) {
-        this.manager = manager;
-    }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {

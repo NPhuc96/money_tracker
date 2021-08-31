@@ -8,17 +8,21 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.WebApplicationContext;
 import personal.nphuc96.money_tracker.security.user.SecurityUser;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Log4j2
 @Component
+@Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class JwtUtil {
 
     @Value("${jwt.expiration.time}")
@@ -75,4 +79,17 @@ public class JwtUtil {
         }
     }
 
+    public Collection<SimpleGrantedAuthority> getRolesFromToken(String token) {
+        try {
+            List<String> roles = decodedJWT(token).getClaim("Roles").asList(String.class);
+            Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+            for (String role : roles) {
+                authorities.add(new SimpleGrantedAuthority(role));
+            }
+            return authorities;
+
+        } catch (JWTDecodeException exception) {
+            throw new JWTDecodeException("Invalid token");
+        }
+    }
 }

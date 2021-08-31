@@ -15,7 +15,6 @@ public interface ModelMapper {
 
     TransactionGroupDTO transactionGroupToDto(TransactionGroup transactionGroup);
 
-
     TransactionGroup dtoToTransactionGroup(TransactionGroupDTO transactionGroupDTO);
 
 

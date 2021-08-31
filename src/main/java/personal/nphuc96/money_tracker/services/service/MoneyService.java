@@ -14,6 +14,7 @@ import personal.nphuc96.money_tracker.dto.TransactionGroupDTO;
 import personal.nphuc96.money_tracker.entity.Transaction;
 import personal.nphuc96.money_tracker.entity.TransactionGroup;
 import personal.nphuc96.money_tracker.entity.pagination.PagedTransaction;
+import personal.nphuc96.money_tracker.exception.BadRequestException;
 import personal.nphuc96.money_tracker.exception.ResourceNotFoundException;
 import personal.nphuc96.money_tracker.services.MoneyServices;
 import personal.nphuc96.money_tracker.util.ModelMapper;
@@ -36,7 +37,10 @@ public class MoneyService implements MoneyServices {
     public void addOrUpdate(TransactionGroupDTO transactionGroupDTO) {
 
         TransactionGroup transactionGroup = modelMapper.dtoToTransactionGroup(transactionGroupDTO);
-        log.info("Found Transaction Group : {}", transactionGroup);
+        log.info("Found Transaction Group : {}", transactionGroup.toString());
+        if (transactionGroup.getName() == null) {
+            throw new BadRequestException("The field name is empty");
+        }
         transactionGroupDAO.save(transactionGroup);
 
     }
@@ -45,7 +49,7 @@ public class MoneyService implements MoneyServices {
     public void addOrUpdate(TransactionDTO transactionDTO) {
 
         Transaction transaction = modelMapper.dtoToTransaction(transactionDTO);
-        log.info("Found Transaction : {}", transaction);
+        log.info("Found Transaction : {}", transaction.toString());
         transactionDAO.save(transaction);
 
     }

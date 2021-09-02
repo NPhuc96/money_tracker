@@ -17,12 +17,10 @@ import personal.nphuc96.money_tracker.entity.Transaction;
 import personal.nphuc96.money_tracker.entity.app_user.AppUser;
 import personal.nphuc96.money_tracker.entity.pagination.PagedTransaction;
 import personal.nphuc96.money_tracker.exception.FailedSQLExeption;
-import personal.nphuc96.money_tracker.exception.ResourceNotFoundException;
 import personal.nphuc96.money_tracker.services.MoneyServices;
 import personal.nphuc96.money_tracker.util.ModelMapper;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,10 +46,8 @@ public class MoneyService implements MoneyServices {
         try {
             groupsDAO.saveAndFlush(groups);
         } catch (DataAccessException ex) {
-            log.info("ERROR OPERATION");
-            log.error(ex.getLocalizedMessage());
-            throw new FailedSQLExeption("Something went wrong. Can not save data",
-                    ex.getCause());
+            log.info(ex.getCause());
+            throw new FailedSQLExeption("Something went wrong. Can not save data");
         }
     }
 
@@ -72,30 +68,30 @@ public class MoneyService implements MoneyServices {
         try {
             transactionDAO.saveAndFlush(transaction);
         } catch (DataAccessException ex) {
-            log.info("ERROR OPERATION");
-            log.error(ex.getLocalizedMessage());
-            throw new FailedSQLExeption("Something went wrong. Can not save data",
-                    ex.getCause());
+            log.info(ex.getCause());
+            throw new FailedSQLExeption("Something went wrong. Can not save data");
         }
     }
 
 
     @Override
-    public void deleteTransactionGroup(Integer id) {
-        Optional<Groups> transactionGroup = groupsDAO.findById(id);
-        if (transactionGroup.isEmpty()) {
-            throw new ResourceNotFoundException("Can not find Transaction Groups with id : " + id);
+    public void deleteGroup(Integer id, Integer userId) {
+        try {
+            groupsDAO.deleteByIdAndUserId(id, userId);
+        } catch (DataAccessException ex) {
+            log.info(ex.getCause());
+            throw new FailedSQLExeption("Failed in deleting group with id : " + id);
         }
-        groupsDAO.delete(transactionGroup.get());
     }
 
     @Override
-    public void deleteTransaction(Integer id) {
-        Optional<Transaction> transaction = transactionDAO.findById(id);
-        if (transaction.isEmpty()) {
-            throw new ResourceNotFoundException("Can not find Transaction with id : " + id);
+    public void deleteTransaction(Integer id, Integer userId) {
+        try {
+            transactionDAO.deleteByIdAndUserId(id, userId);
+        } catch (DataAccessException ex) {
+            log.info(ex.getCause());
+            throw new FailedSQLExeption("Failed in deleting transaction with id : " + id);
         }
-        transactionDAO.delete(transaction.get());
     }
 
     @Override
@@ -128,7 +124,8 @@ public class MoneyService implements MoneyServices {
                     .transactions(dtos)
                     .build();
         } catch (DataAccessException ex) {
-            throw new FailedSQLExeption("Failed to fetch data with this id : " + userId, ex.getCause());
+            log.info(ex.getCause());
+            throw new FailedSQLExeption("Failed in fetching data with this id : " + userId);
         }
     }
 

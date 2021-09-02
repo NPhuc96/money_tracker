@@ -13,13 +13,15 @@ public interface MoneyServices {
 
     void addOrUpdate(TransactionDTO transactionDTO);
 
-    void deleteTransactionGroup(Integer id);
+    void deleteGroup(Integer id, Integer userId);
 
-    void deleteTransaction(Integer id);
+    void deleteTransaction(Integer id, Integer userId);
 
     List<GroupsDTO> findGroupsByUserId(Integer userId);
 
-    PagedTransaction pagedTransactionByUserId(Integer pageSize, Integer currentPage, Integer userId);
+    PagedTransaction pagedTransactionByUserId(Integer pageSize,
+                                              Integer currentPage,
+                                              Integer userId);
 
 
 }

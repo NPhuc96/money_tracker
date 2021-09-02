@@ -39,25 +39,26 @@ public class MoneyController {
         return ResponseEntity.ok("Successful");
     }
 
-    @DeleteMapping("/group/delete/{id}")
-    public ResponseEntity<?> deleteTransactionGroup(@PathVariable("id") Integer id) {
+    @DeleteMapping("/group/delete/{userid}/{id}")
+    public ResponseEntity<?> deleteTransactionGroup(
+            @PathVariable("userid") Integer userId,
+            @PathVariable("id") Integer id) {
 
-        log.info("Received id : {} of Transaction Groups", id);
-        moneyServices.deleteTransactionGroup(id);
-
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping("/transaction/delete/{id}")
-    public ResponseEntity<?> deleteTransaction(@PathVariable("id") Integer id) {
-
-        log.info("Received id : {}", id);
-        moneyServices.deleteTransaction(id);
+        moneyServices.deleteGroup(id, userId);
 
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/group/all")
+    @DeleteMapping("/transaction/delete/{userid}/{id}")
+    public ResponseEntity<?> deleteTransaction(
+            @PathVariable("userid") Integer userId,
+            @PathVariable("id") Integer id) {
+        moneyServices.deleteTransaction(id, userId);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/groups")
     @ResponseBody
     public List<GroupsDTO> allGroup(@RequestParam(value = "userid") Integer userId) {
 

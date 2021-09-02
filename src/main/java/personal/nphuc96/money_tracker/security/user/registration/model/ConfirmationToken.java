@@ -1,7 +1,9 @@
-package personal.nphuc96.money_tracker.security.user.registration.confirmation;
+package personal.nphuc96.money_tracker.security.user.registration.model;
 
-import lombok.*;
-import personal.nphuc96.money_tracker.entity.app_user.AppUser;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -54,8 +56,10 @@ public class ConfirmationToken {
     @Column(name = "is_confirmed")
     private Boolean isConfirmed;
 
-    @ManyToOne
-    @JoinColumn(name = "app_user_id")
-    @ToString.Exclude
-    private AppUser appUser;
+    /* @ManyToOne
+     @JoinColumn(name = "app_user_id",referencedColumnName = "id")
+     @EqualsAndHashCode.Exclude
+     @ToString.Exclude*/
+    @Column(name = "app_user_id")
+    private Integer userId;
 }

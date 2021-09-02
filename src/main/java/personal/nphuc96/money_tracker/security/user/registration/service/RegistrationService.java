@@ -12,11 +12,9 @@ import personal.nphuc96.money_tracker.entity.app_user.AppUser;
 import personal.nphuc96.money_tracker.exception.BadRequestException;
 import personal.nphuc96.money_tracker.exception.ResourceAlreadyExists;
 import personal.nphuc96.money_tracker.exception.ResourceNotFoundException;
-import personal.nphuc96.money_tracker.security.user.registration.RegistrationRequest;
 import personal.nphuc96.money_tracker.security.user.registration.RegistrationServices;
-import personal.nphuc96.money_tracker.security.user.registration.confirmation.ConfirmationToken;
-import personal.nphuc96.money_tracker.security.user.registration.confirmation.ConfirmationTokenService;
-import personal.nphuc96.money_tracker.security.user.registration.sender.MailService;
+import personal.nphuc96.money_tracker.security.user.registration.model.ConfirmationToken;
+import personal.nphuc96.money_tracker.security.user.registration.model.RegistrationRequest;
 
 import javax.mail.MessagingException;
 import java.security.SecureRandom;
@@ -52,8 +50,8 @@ public class RegistrationService implements RegistrationServices {
         appUserDAO.save(appUser);
         log.info("Saved  {}  to database ", appUser.toString());
 
-        ConfirmationToken confirmationToken = initialConfirmToken(appUser, randomToken());
-        log.info("Built appUser : {}", confirmationToken.toString());
+        ConfirmationToken confirmationToken = initialConfirmToken(appUser.getId(), randomToken());
+        log.info("Built confirmationToken : {}", confirmationToken.toString());
         confirmationTokenService.save(confirmationToken);
         log.info("Saved  {}  to database ", confirmationToken.toString());
         try {
@@ -97,9 +95,9 @@ public class RegistrationService implements RegistrationServices {
                 .build();
     }
 
-    private ConfirmationToken initialConfirmToken(AppUser appUser, String token) {
+    private ConfirmationToken initialConfirmToken(Integer userId, String token) {
         return ConfirmationToken.builder()
-                .appUser(appUser)
+                .userId(userId)
                 .token(token)
                 .creationTime(LocalDateTime.now())
                 .expirationTime(LocalDateTime.now().plusMinutes(expiredTime))

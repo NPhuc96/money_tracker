@@ -2,7 +2,7 @@ package personal.nphuc96.money_tracker.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import personal.nphuc96.money_tracker.security.user.registration.confirmation.ConfirmationToken;
+import personal.nphuc96.money_tracker.security.user.registration.model.ConfirmationToken;
 
 import java.util.Optional;
 

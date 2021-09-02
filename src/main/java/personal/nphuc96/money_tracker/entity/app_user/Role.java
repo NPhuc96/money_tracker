@@ -1,6 +1,7 @@
 package personal.nphuc96.money_tracker.entity.app_user;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import javax.persistence.*;
@@ -36,6 +37,7 @@ public class Role {
     private String name;
 
     @ManyToMany(mappedBy = "roles")
+    @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private List<AppUser> appUsers;
 }

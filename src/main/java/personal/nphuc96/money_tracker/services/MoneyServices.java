@@ -1,7 +1,7 @@
 package personal.nphuc96.money_tracker.services;
 
+import personal.nphuc96.money_tracker.dto.GroupsDTO;
 import personal.nphuc96.money_tracker.dto.TransactionDTO;
-import personal.nphuc96.money_tracker.dto.TransactionGroupDTO;
 import personal.nphuc96.money_tracker.entity.pagination.PagedTransaction;
 
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface MoneyServices {
 
-    void addOrUpdate(TransactionGroupDTO transactionGroupDTO);
+    void addOrUpdate(GroupsDTO groupsDTO);
 
     void addOrUpdate(TransactionDTO transactionDTO);
 
@@ -17,9 +17,9 @@ public interface MoneyServices {
 
     void deleteTransaction(Integer id);
 
-    List<TransactionGroupDTO> allGroup();
+    List<GroupsDTO> findGroupsByUserId(Integer userId);
 
-    PagedTransaction findTransactions(Integer pageSize, Integer currentPage);
+    PagedTransaction pagedTransactionByUserId(Integer pageSize, Integer currentPage, Integer userId);
 
 
 }

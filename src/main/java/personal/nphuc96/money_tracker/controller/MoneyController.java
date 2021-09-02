@@ -4,10 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import personal.nphuc96.money_tracker.dto.GroupsDTO;
 import personal.nphuc96.money_tracker.dto.TransactionDTO;
-import personal.nphuc96.money_tracker.dto.TransactionGroupDTO;
 import personal.nphuc96.money_tracker.entity.pagination.PagedTransaction;
-import personal.nphuc96.money_tracker.exception.BadRequestException;
 import personal.nphuc96.money_tracker.services.MoneyServices;
 
 import java.util.List;
@@ -22,32 +21,28 @@ public class MoneyController {
     private final MoneyServices moneyServices;
 
     @PostMapping("/group/add")
-    public ResponseEntity<?> addOrUpdate(@RequestBody TransactionGroupDTO transactionGroupDTO) {
-        try {
-            log.info("Received object TransactionGroupDTO : {}", transactionGroupDTO.toString());
+    public ResponseEntity<?> addOrUpdate(@RequestBody GroupsDTO groupsDTO) {
 
-            moneyServices.addOrUpdate(transactionGroupDTO);
-        } catch (Exception ex) {
-            throw new BadRequestException("Error save or update data");
-        }
+        log.info("Received object GroupsDTO : {}", groupsDTO.toString());
+
+        moneyServices.addOrUpdate(groupsDTO);
+
         return ResponseEntity.ok("Successful");
     }
 
     @PostMapping("/transaction/add")
     public ResponseEntity<?> addOrUpdate(@RequestBody TransactionDTO transactionDTO) {
-        try {
-            log.info("Received object TransactionDTO : {}", transactionDTO.toString());
-            moneyServices.addOrUpdate(transactionDTO);
-        } catch (Exception ex) {
-            throw new BadRequestException("Error save or update data");
-        }
+
+        log.info("Received object TransactionDTO : {}", transactionDTO.toString());
+        moneyServices.addOrUpdate(transactionDTO);
+
         return ResponseEntity.ok("Successful");
     }
 
     @DeleteMapping("/group/delete/{id}")
     public ResponseEntity<?> deleteTransactionGroup(@PathVariable("id") Integer id) {
 
-        log.info("Received id : {} of Transaction Group", id);
+        log.info("Received id : {} of Transaction Groups", id);
         moneyServices.deleteTransactionGroup(id);
 
         return ResponseEntity.noContent().build();
@@ -64,23 +59,20 @@ public class MoneyController {
 
     @GetMapping("/group/all")
     @ResponseBody
-    public List<TransactionGroupDTO> allGroup() {
-        try {
-            return moneyServices.allGroup();
-        } catch (Exception ex) {
-            throw new BadRequestException("Failed to fetch data");
-        }
+    public List<GroupsDTO> allGroup(@RequestParam(value = "userid") Integer userId) {
+
+        return moneyServices.findGroupsByUserId(userId);
+
     }
 
     @GetMapping("/transaction")
     @ResponseBody
     public PagedTransaction findTransactions(
             @RequestParam(value = "size", defaultValue = "15", required = false) Integer size,
-            @RequestParam(value = "page", defaultValue = "1", required = false) Integer page) {
-        try {
-            return moneyServices.findTransactions(size, page);
-        } catch (Exception ex) {
-            throw new BadRequestException("Failed to fetch data");
-        }
+            @RequestParam(value = "page", defaultValue = "1", required = false) Integer page,
+            @RequestParam(value = "userid") Integer userId) {
+
+        return moneyServices.pagedTransactionByUserId(size, page, userId);
     }
 }
+

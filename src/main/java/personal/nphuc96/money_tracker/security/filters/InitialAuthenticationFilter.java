@@ -1,6 +1,6 @@
 package personal.nphuc96.money_tracker.security.filters;
 
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import personal.nphuc96.money_tracker.dto.JwtTokenResponse;
 import personal.nphuc96.money_tracker.security.user.SecurityUser;
 import personal.nphuc96.money_tracker.util.JwtUtil;
 
@@ -19,11 +20,16 @@ import java.io.IOException;
 
 
 @Log4j2
-@AllArgsConstructor
+
 public class InitialAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager manager;
     private final JwtUtil jwtUtil;
+
+    public InitialAuthenticationFilter(AuthenticationManager manager, JwtUtil jwtUtil) {
+        this.manager = manager;
+        this.jwtUtil = jwtUtil;
+    }
 
 
     @Override
@@ -41,8 +47,10 @@ public class InitialAuthenticationFilter extends UsernamePasswordAuthenticationF
         SecurityUser user = (SecurityUser) auth.getPrincipal();
         log.info("Get SecurityUser from Authentication object : {}", user.toString());
         String token = jwtUtil.createToken(user, request);
-        // log.info("Generated new token for user : {}", user.toString());
-        response.setHeader("access_token", token);
+        new ObjectMapper()
+                .writerWithDefaultPrettyPrinter()
+                .writeValue(response.getOutputStream(),
+                        new JwtTokenResponse(token, jwtUtil.getId(user)));
     }
 
     @Override

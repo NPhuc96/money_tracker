@@ -26,5 +26,7 @@ public class TransactionDTO {
 
     private BigDecimal money;
 
-    private TransactionGroupDTO transactionGroup;
+    private Integer groupsId;
+
+    private Integer appUserId;
 }

@@ -1,4 +1,4 @@
-package personal.nphuc96.money_tracker.security.user.registration.confirmation;
+package personal.nphuc96.money_tracker.security.user.registration.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import personal.nphuc96.money_tracker.dao.ConfirmationTokenDAO;
 import personal.nphuc96.money_tracker.exception.BadRequestException;
 import personal.nphuc96.money_tracker.exception.ResourceNotFoundException;
+import personal.nphuc96.money_tracker.security.user.registration.model.ConfirmationToken;
 
 import java.time.LocalDateTime;
 import java.util.Optional;

@@ -2,19 +2,21 @@ package personal.nphuc96.money_tracker.services.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import personal.nphuc96.money_tracker.dao.AppUserDAO;
+import personal.nphuc96.money_tracker.dao.GroupsDAO;
 import personal.nphuc96.money_tracker.dao.TransactionDAO;
-import personal.nphuc96.money_tracker.dao.TransactionGroupDAO;
+import personal.nphuc96.money_tracker.dto.GroupsDTO;
 import personal.nphuc96.money_tracker.dto.TransactionDTO;
-import personal.nphuc96.money_tracker.dto.TransactionGroupDTO;
+import personal.nphuc96.money_tracker.entity.Groups;
 import personal.nphuc96.money_tracker.entity.Transaction;
-import personal.nphuc96.money_tracker.entity.TransactionGroup;
+import personal.nphuc96.money_tracker.entity.app_user.AppUser;
 import personal.nphuc96.money_tracker.entity.pagination.PagedTransaction;
-import personal.nphuc96.money_tracker.exception.BadRequestException;
+import personal.nphuc96.money_tracker.exception.FailedSQLExeption;
 import personal.nphuc96.money_tracker.exception.ResourceNotFoundException;
 import personal.nphuc96.money_tracker.services.MoneyServices;
 import personal.nphuc96.money_tracker.util.ModelMapper;
@@ -29,39 +31,62 @@ import java.util.stream.Collectors;
 public class MoneyService implements MoneyServices {
 
     private final ModelMapper modelMapper;
-    private final TransactionGroupDAO transactionGroupDAO;
+    private final GroupsDAO groupsDAO;
     private final TransactionDAO transactionDAO;
-
+    private final AppUserDAO appUserDAO;
 
     @Override
-    public void addOrUpdate(TransactionGroupDTO transactionGroupDTO) {
+    public void addOrUpdate(GroupsDTO groupsDTO) {
+        AppUser appUser = appUserDAO.getById(groupsDTO.getAppUserId());
+        log.info("Found AppUser : {}", appUser.toString());
 
-        TransactionGroup transactionGroup = modelMapper.dtoToTransactionGroup(transactionGroupDTO);
-        log.info("Found Transaction Group : {}", transactionGroup.toString());
-        if (transactionGroup.getName() == null) {
-            throw new BadRequestException("The field name is empty");
+        Groups groups = modelMapper.dtoToGroups(groupsDTO);
+        log.info("Found Groups Before : {}", groups.toString());
+        groups.setAppUser(appUser);
+        log.info("Found Groups After : {}", groups.toString());
+
+        try {
+            groupsDAO.saveAndFlush(groups);
+        } catch (DataAccessException ex) {
+            log.info("ERROR OPERATION");
+            log.error(ex.getLocalizedMessage());
+            throw new FailedSQLExeption("Something went wrong. Can not save data",
+                    ex.getCause());
         }
-        transactionGroupDAO.save(transactionGroup);
-
     }
 
     @Override
     public void addOrUpdate(TransactionDTO transactionDTO) {
+        AppUser appUser = appUserDAO.getById(transactionDTO.getAppUserId());
+        log.info("Found AppUser : {}", appUser.toString());
+
+        Groups groups = groupsDAO.getById(transactionDTO.getGroupsId());
+        log.info("Found Groups : {}", groups.toString());
 
         Transaction transaction = modelMapper.dtoToTransaction(transactionDTO);
-        log.info("Found Transaction : {}", transaction.toString());
-        transactionDAO.save(transaction);
+        log.info("Found Transaction Before : {}", transaction.toString());
+        transaction.setGroups(groups);
+        transaction.setAppUser(appUser);
+        log.info("Found Transaction After : {}", transaction.toString());
 
+        try {
+            transactionDAO.saveAndFlush(transaction);
+        } catch (DataAccessException ex) {
+            log.info("ERROR OPERATION");
+            log.error(ex.getLocalizedMessage());
+            throw new FailedSQLExeption("Something went wrong. Can not save data",
+                    ex.getCause());
+        }
     }
 
 
     @Override
     public void deleteTransactionGroup(Integer id) {
-        Optional<TransactionGroup> transactionGroup = transactionGroupDAO.findById(id);
+        Optional<Groups> transactionGroup = groupsDAO.findById(id);
         if (transactionGroup.isEmpty()) {
-            throw new ResourceNotFoundException("Can not find Transaction Group with id : " + id);
+            throw new ResourceNotFoundException("Can not find Transaction Groups with id : " + id);
         }
-        transactionGroupDAO.delete(transactionGroup.get());
+        groupsDAO.delete(transactionGroup.get());
     }
 
     @Override
@@ -74,32 +99,37 @@ public class MoneyService implements MoneyServices {
     }
 
     @Override
-    public List<TransactionGroupDTO> allGroup() {
-        List<TransactionGroup> transactionGroupList =
-                transactionGroupDAO.findAll(Sort.by(Sort.Direction.ASC, "name"));
-        return transactionGroupList
-                .stream().map(modelMapper::transactionGroupToDto)
+    public List<GroupsDTO> findGroupsByUserId(Integer userId) {
+        List<Groups> groupsList =
+                groupsDAO.findGroupsByUserId(userId);
+        return groupsList
+                .stream().map(modelMapper::groupsToDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public PagedTransaction findTransactions(Integer pageSize, Integer currentPage) {
+    public PagedTransaction pagedTransactionByUserId(Integer pageSize, Integer currentPage, Integer userId) {
         Pageable pageable = PageRequest.of(currentPage - 1, pageSize);
-        Page<Transaction> transactionsPage = transactionDAO.findAndSortById(pageable);
-        List<TransactionDTO> transactionDTOList =
-                transactionsPage.getContent()
-                        .stream()
-                        .map(modelMapper::transactionToDTO)
-                        .collect(Collectors.toList());
-        int totalPages = transactionsPage.getTotalPages();
-        return PagedTransaction.builder()
-                .currentPage(currentPage)
-                .totalPages(totalPages)
-                .prev(currentPage - 1 >= 1)
-                .next(currentPage + 1 <= totalPages)
-                .transactions(transactionDTOList)
-                .build();
+        try {
+            Page<Transaction> transactionsPage = transactionDAO.findTransactionByUserId(userId, pageable);
+            log.info("Found paged : {}", transactionsPage.toString());
+            List<TransactionDTO> dtos =
+                    transactionsPage.getContent()
+                            .stream()
+                            .map(modelMapper::transactionToDTO)
+                            .collect(Collectors.toList());
+            int totalPages = transactionsPage.getTotalPages();
+            log.info("Get List from Paged : {}", dtos.toString());
+            return PagedTransaction.builder()
+                    .currentPage(currentPage)
+                    .totalPages(totalPages)
+                    .prev(currentPage - 1 >= 1)
+                    .next(currentPage + 1 <= totalPages)
+                    .transactions(dtos)
+                    .build();
+        } catch (DataAccessException ex) {
+            throw new FailedSQLExeption("Failed to fetch data with this id : " + userId, ex.getCause());
+        }
     }
-
 
 }

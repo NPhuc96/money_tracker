@@ -47,9 +47,8 @@ public class JwtUtil {
     public String createToken(SecurityUser user, HttpServletRequest request) {
         try {
             return JWT.create()
-                    .withIssuer("Auth0 - Money Tracker Application")
-                    .withExpiresAt(expiredTime(expiredTime))
                     .withSubject(user.getUsername())
+                    .withExpiresAt(expiredTime(expiredTime))
                     .withIssuedAt(new Date())
                     .withIssuer(request.getRequestURL().toString())
                     .withClaim("Roles",
@@ -61,6 +60,11 @@ public class JwtUtil {
         } catch (JWTCreationException exception) {
             throw new JWTCreationException("Can not create new token", exception.getCause());
         }
+    }
+
+
+    public Integer getId(SecurityUser user) {
+        return user.getAppUser().getId();
     }
 
     private DecodedJWT decodedJWT(String token) {

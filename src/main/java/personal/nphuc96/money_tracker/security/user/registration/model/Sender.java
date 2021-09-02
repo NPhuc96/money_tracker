@@ -1,4 +1,4 @@
-package personal.nphuc96.money_tracker.security.user.registration.sender;
+package personal.nphuc96.money_tracker.security.user.registration.model;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;

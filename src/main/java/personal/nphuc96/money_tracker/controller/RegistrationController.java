@@ -6,8 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import personal.nphuc96.money_tracker.security.user.registration.RegistrationRequest;
 import personal.nphuc96.money_tracker.security.user.registration.RegistrationServices;
+import personal.nphuc96.money_tracker.security.user.registration.model.RegistrationRequest;
 
 import javax.mail.MessagingException;
 import javax.validation.Valid;

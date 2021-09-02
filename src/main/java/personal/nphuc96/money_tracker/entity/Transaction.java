@@ -1,6 +1,9 @@
 package personal.nphuc96.money_tracker.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import personal.nphuc96.money_tracker.entity.app_user.AppUser;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -54,9 +57,17 @@ public class Transaction {
     )
     private BigDecimal money;
 
-    @OneToOne(
+    @ManyToOne(
             cascade = {MERGE, REFRESH}
     )
-    @JoinColumn(name = "transaction_group_id", referencedColumnName = "id")
-    private TransactionGroup transactionGroup;
+    @JoinColumn(name = "groups_id", referencedColumnName = "id")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Groups groups;
+
+    @ManyToOne(cascade = {MERGE, REFRESH})
+    @JoinColumn(name = "app_user_id", referencedColumnName = "id", nullable = false)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private AppUser appUser;
 }

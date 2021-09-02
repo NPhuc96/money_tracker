@@ -1,12 +1,12 @@
 package personal.nphuc96.money_tracker.entity.app_user;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import personal.nphuc96.money_tracker.entity.Groups;
+import personal.nphuc96.money_tracker.entity.Transaction;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 import static javax.persistence.CascadeType.*;
 import static javax.persistence.GenerationType.SEQUENCE;
@@ -67,4 +67,22 @@ public class AppUser {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private List<Role> roles;
+
+    @OneToMany(cascade = {ALL},
+            fetch = FetchType.EAGER,
+            mappedBy = "appUser",
+            orphanRemoval = true)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Set<Transaction> transactions;
+
+    @OneToMany(cascade = {ALL},
+            fetch = FetchType.EAGER,
+            mappedBy = "appUser",
+            orphanRemoval = true)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Set<Groups> groups;
+
+
 }

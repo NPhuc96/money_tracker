@@ -6,12 +6,14 @@ import lombok.Data;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
-public class TransactionGroupDTO {
+public class GroupsDTO {
 
     private Integer id;
 
 
     private String name;
+
+    private Integer appUserId;
 
     //icon
 }

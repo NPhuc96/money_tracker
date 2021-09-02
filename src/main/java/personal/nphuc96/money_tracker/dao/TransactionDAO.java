@@ -10,6 +10,6 @@ import personal.nphuc96.money_tracker.entity.Transaction;
 @Repository
 public interface TransactionDAO extends JpaRepository<Transaction, Integer> {
 
-    @Query(value = "SELECT t FROM Transaction t order by t.id desc")
-    Page<Transaction> findAndSortById(Pageable pageable);
+    @Query(value = "SELECT t FROM Transaction t where t.appUser.id =?1 order by t.id desc")
+    Page<Transaction> findTransactionByUserId(Integer userId, Pageable pageable);
 }

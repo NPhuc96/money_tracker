@@ -1,4 +1,4 @@
-package personal.nphuc96.money_tracker.security.user.registration;
+package personal.nphuc96.money_tracker.security.user.registration.model;
 
 import lombok.Data;
 import personal.nphuc96.money_tracker.security.user.registration.validation.PasswordMatches;

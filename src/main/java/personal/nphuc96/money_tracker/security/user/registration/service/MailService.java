@@ -1,4 +1,4 @@
-package personal.nphuc96.money_tracker.security.user.registration.sender;
+package personal.nphuc96.money_tracker.security.user.registration.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import personal.nphuc96.money_tracker.security.user.registration.model.Sender;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;

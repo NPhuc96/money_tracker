@@ -56,10 +56,7 @@ public class ConfirmationToken {
     @Column(name = "is_confirmed")
     private Boolean isConfirmed;
 
-    /* @ManyToOne
-     @JoinColumn(name = "app_user_id",referencedColumnName = "id")
-     @EqualsAndHashCode.Exclude
-     @ToString.Exclude*/
+
     @Column(name = "app_user_id")
     private Integer userId;
 }

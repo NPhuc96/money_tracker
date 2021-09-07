@@ -24,10 +24,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String email = authentication.getName();
         String password = authentication.getCredentials().toString();
-        log.info("Username : {} , password : {}", email, password);
         SecurityUser securityUser = (SecurityUser) customUserDetailsService.loadUserByUsername(email);
         if (passwordEncoder.matches(password, securityUser.getPassword())) {
-            log.info("Found user, return UsernamePasswordAuthenticationToken object");
             return new UsernamePasswordAuthenticationToken(securityUser, password, securityUser.getAuthorities());
         }
         throw new BadCredentialsException("Something went wrong");

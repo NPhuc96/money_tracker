@@ -2,15 +2,16 @@ package personal.nphuc96.money_tracker.security.user.registration.model;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.stereotype.Component;
 
 import java.util.Properties;
 
 @Data
-@Component
-public class Sender {
+@Configuration
+public class JavaMailSenderConfiguration {
 
     @Value("${spring.mail.host}")
     private String host;
@@ -24,8 +25,8 @@ public class Sender {
     @Value("${spring.mail.password}")
     private String password;
 
-
-    public JavaMailSender getJavaMailSender() {
+    @Bean
+    public JavaMailSender javaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost(host);
         mailSender.setPort(port);

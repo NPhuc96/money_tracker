@@ -17,6 +17,8 @@ import org.springframework.web.context.WebApplicationContext;
 import personal.nphuc96.money_tracker.security.user.SecurityUser;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -58,7 +60,7 @@ public class JwtUtil {
                                     .collect(Collectors.toList()))
                     .sign(getAlgorithm());
         } catch (JWTCreationException exception) {
-            throw new JWTCreationException("Can not create new token", exception.getCause());
+            throw new JWTCreationException("Failed creating new token", exception.getCause());
         }
     }
 
@@ -79,7 +81,7 @@ public class JwtUtil {
         try {
             return decodedJWT(token).getSubject();
         } catch (JWTDecodeException exception) {
-            throw new JWTDecodeException("Invalid token");
+            throw new JWTDecodeException("Failed extracting username");
         }
     }
 
@@ -93,7 +95,16 @@ public class JwtUtil {
             return authorities;
 
         } catch (JWTDecodeException exception) {
-            throw new JWTDecodeException("Invalid token");
+            throw new JWTDecodeException("Failed extracting role");
+        }
+    }
+
+    public LocalDateTime getTokenExpiration(String token) {
+        try {
+            Date date = decodedJWT(token).getExpiresAt();
+            return new Timestamp(date.getTime()).toLocalDateTime();
+        } catch (JWTDecodeException exception) {
+            throw new JWTDecodeException("Failed extracting date");
         }
     }
 }

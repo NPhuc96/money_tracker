@@ -33,7 +33,7 @@ public class RegistrationService implements RegistrationServices {
     private final MailService mailService;
     private final RoleDAO roleDAO;
     @Value("${mail.expired.time}")
-    private int expiredTime;
+    private int expirationTime;
     @Value("${mail.confirmation.token}")
     private int tokenLength;
     @Value("${mail.confirmation.token.words}")
@@ -55,7 +55,7 @@ public class RegistrationService implements RegistrationServices {
         confirmationTokenService.save(confirmationToken);
         log.info("Saved  {}  to database ", confirmationToken.toString());
         try {
-            mailService.send(appUser.getEmail(), confirmationToken.getToken());
+            mailService.send(appUser.getEmail(), confirmationToken.getToken(), expirationTime);
             log.info("Sent email to " + appUser.getEmail());
         } catch (MessagingException ex) {
             throw new MessagingException("Something went wrong");
@@ -77,7 +77,6 @@ public class RegistrationService implements RegistrationServices {
 
         SecureRandom secureRandom = new SecureRandom();
         StringBuilder sb = new StringBuilder();
-        log.info("Starting generate random Token");
         for (int i = 0; i < tokenLength; i++) {
             sb.append(words.charAt(secureRandom.nextInt(words.length())));
         }
@@ -100,7 +99,7 @@ public class RegistrationService implements RegistrationServices {
                 .userId(userId)
                 .token(token)
                 .creationTime(LocalDateTime.now())
-                .expirationTime(LocalDateTime.now().plusMinutes(expiredTime))
+                .expirationTime(LocalDateTime.now().plusMinutes(expirationTime))
                 .isConfirmed(false)
                 .confirmationTime(null)
                 .build();
@@ -119,8 +118,8 @@ public class RegistrationService implements RegistrationServices {
         } else throw new ResourceNotFoundException("Not Found Email : " + email);
     }
 
-    private void matchedPassword(String pass, String repeat) {
-        if (!pass.equals(repeat)) {
+    private void matchedPassword(String pass, String matchingPassword) {
+        if (!pass.equals(matchingPassword)) {
             throw new BadRequestException("Password not matched");
         }
     }

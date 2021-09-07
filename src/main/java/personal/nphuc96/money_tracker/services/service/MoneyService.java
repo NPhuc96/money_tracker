@@ -23,6 +23,8 @@ import personal.nphuc96.money_tracker.util.ModelMapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.springframework.util.StringUtils.capitalize;
+
 @Service
 @AllArgsConstructor
 @Log4j2
@@ -42,7 +44,7 @@ public class MoneyService implements MoneyServices {
         log.info("Found Groups Before : {}", groups.toString());
         groups.setAppUser(appUser);
         log.info("Found Groups After : {}", groups.toString());
-
+        groups.setName(capitalize(groups.getName()));
         try {
             groupsDAO.saveAndFlush(groups);
         } catch (DataAccessException ex) {
@@ -107,26 +109,30 @@ public class MoneyService implements MoneyServices {
     public PagedTransaction pagedTransactionByUserId(Integer pageSize, Integer currentPage, Integer userId) {
         Pageable pageable = PageRequest.of(currentPage - 1, pageSize);
         try {
-            Page<Transaction> transactionsPage = transactionDAO.findTransactionByUserId(userId, pageable);
-            log.info("Found paged : {}", transactionsPage.toString());
-            List<TransactionDTO> dtos =
-                    transactionsPage.getContent()
-                            .stream()
-                            .map(modelMapper::transactionToDTO)
-                            .collect(Collectors.toList());
-            int totalPages = transactionsPage.getTotalPages();
-            log.info("Get List from Paged : {}", dtos.toString());
-            return PagedTransaction.builder()
-                    .currentPage(currentPage)
-                    .totalPages(totalPages)
-                    .prev(currentPage - 1 >= 1)
-                    .next(currentPage + 1 <= totalPages)
-                    .transactions(dtos)
-                    .build();
+            Page<Transaction> page = transactionDAO.findTransactionByUserId(userId, pageable);
+            List<TransactionDTO> dtos = buildTransactionDtoList(page);
+            int totalPages = page.getTotalPages();
+            return buildPagedTransaction(currentPage, totalPages, dtos);
         } catch (DataAccessException ex) {
             log.info(ex.getCause());
             throw new FailedSQLExeption("Failed in fetching data with this id : " + userId);
         }
     }
 
+    private List<TransactionDTO> buildTransactionDtoList(Page<Transaction> page) {
+        return page.getContent()
+                .stream()
+                .map(modelMapper::transactionToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private PagedTransaction buildPagedTransaction(Integer currentPage, Integer totalPages, List<TransactionDTO> dtos) {
+        return PagedTransaction.builder()
+                .currentPage(currentPage)
+                .totalPages(totalPages)
+                .prev(currentPage - 1 >= 1)
+                .next(currentPage + 1 <= totalPages)
+                .transactions(dtos)
+                .build();
+    }
 }

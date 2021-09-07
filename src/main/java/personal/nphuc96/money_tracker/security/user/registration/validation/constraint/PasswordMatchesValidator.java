@@ -19,9 +19,6 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
         if (Objects.isNull(value)) {
             return false;
         }
-        if ((value.length() < 8) || (value.length() > 32)) {
-            return false;
-        }
         return pattern.matcher(value).matches();
     }
 }

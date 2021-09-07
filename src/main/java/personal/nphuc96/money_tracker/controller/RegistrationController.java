@@ -36,7 +36,7 @@ public class RegistrationController {
         return ResponseEntity.ok("A confirmation email has been sent to your email");
     }
 
-    @GetMapping(path = "/confirm")
+    @PostMapping(path = "/confirm")
     public ResponseEntity<?> confirm(@RequestParam("token") String token,
                                      @RequestParam("email") String email) {
         registrationServices.confirmToken(token, email);

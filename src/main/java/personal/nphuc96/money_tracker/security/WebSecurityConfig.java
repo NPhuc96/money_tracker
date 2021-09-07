@@ -13,8 +13,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.session.SessionManagementFilter;
-import personal.nphuc96.money_tracker.security.filters.CustomCorsFilter;
 import personal.nphuc96.money_tracker.security.filters.InitialAuthenticationFilter;
 import personal.nphuc96.money_tracker.security.filters.InitialAuthorizationFilter;
 import personal.nphuc96.money_tracker.util.JwtUtil;
@@ -27,14 +25,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     private final CustomAuthenticationProvider customAuthenticationProvider;
-    private final CustomCorsFilter corsFilter;
     private final JwtUtil jwtUtil;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
         http
-                .addFilterBefore(corsFilter.corsFilter(), SessionManagementFilter.class)
+                .cors().and()
                 .csrf().disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

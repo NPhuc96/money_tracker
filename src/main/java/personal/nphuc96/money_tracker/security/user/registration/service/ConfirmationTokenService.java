@@ -42,7 +42,7 @@ public class ConfirmationTokenService {
             confirmationToken.setConfirmationTime(LocalDateTime.now());
             confirmationToken.setIsConfirmed(true);
             confirmationTokenDAO.save(confirmationToken);
-        } else throw new ResourceNotFoundException("Invalid Token, Not Found");
+        } else throw new ResourceNotFoundException("Invalid Token or Can Not Found");
     }
 
     private void checkConfirmedTime(LocalDateTime confirmTime) {

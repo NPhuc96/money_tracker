@@ -20,7 +20,6 @@ import java.io.IOException;
 
 
 @Log4j2
-
 public class InitialAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager manager;
@@ -50,7 +49,7 @@ public class InitialAuthenticationFilter extends UsernamePasswordAuthenticationF
         new ObjectMapper()
                 .writerWithDefaultPrettyPrinter()
                 .writeValue(response.getOutputStream(),
-                        new JwtTokenResponse(token, jwtUtil.getId(user)));
+                        new JwtTokenResponse(token, jwtUtil.getId(user), jwtUtil.getTokenExpiration(token)));
     }
 
     @Override

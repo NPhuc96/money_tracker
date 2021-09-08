@@ -30,10 +30,11 @@ import static org.springframework.util.StringUtils.capitalize;
 @Log4j2
 public class MoneyService implements MoneyServices {
 
-    private final ModelMapper modelMapper;
-    private final GroupsDAO groupsDAO;
     private final TransactionDAO transactionDAO;
+    private final ModelMapper modelMapper;
     private final AppUserDAO appUserDAO;
+    private final GroupsDAO groupsDAO;
+
 
     @Override
     public void addOrUpdate(GroupsDTO groupsDTO) {

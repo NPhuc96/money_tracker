@@ -44,18 +44,18 @@ public class Transaction {
     private String note;
 
     @Column(
-            name = "time",
+            name = "on_date",
             columnDefinition = "DATE",
             nullable = false
 
     )
-    private LocalDate time;
+    private LocalDate on;
 
     @Column(
-            name = "money",
+            name = "amount",
             nullable = false
     )
-    private BigDecimal money;
+    private BigDecimal amount;
 
     @ManyToOne(
             cascade = {MERGE, REFRESH}

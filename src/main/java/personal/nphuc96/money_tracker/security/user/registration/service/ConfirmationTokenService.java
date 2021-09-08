@@ -31,7 +31,7 @@ public class ConfirmationTokenService {
         }
     }
 
-    public void confirmTokenProcess(String token) {
+    public void confirmToken(String token) {
         Optional<ConfirmationToken> temp = confirmationTokenDAO.findByToken(token);
         if (temp.isPresent()) {
             log.info("Found temp confirmationToken : {} ", temp.get().toString());

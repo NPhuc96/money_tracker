@@ -43,7 +43,7 @@ public class AppUser {
     private String email;
 
     @Column(
-            name = "h_password",
+            name = "password",
             nullable = false
     )
     private String password;
@@ -60,7 +60,7 @@ public class AppUser {
     )
     private Boolean isNonLocked;
 
-    @ManyToMany(cascade = {PERSIST, REFRESH, MERGE}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {PERSIST, REFRESH, MERGE}, fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_role",
             joinColumns = @JoinColumn(name = "app_user_id"),
@@ -69,7 +69,7 @@ public class AppUser {
     private List<Role> roles;
 
     @OneToMany(cascade = {ALL},
-            fetch = FetchType.EAGER,
+            fetch = FetchType.LAZY,
             mappedBy = "appUser",
             orphanRemoval = true)
     @EqualsAndHashCode.Exclude
@@ -77,7 +77,7 @@ public class AppUser {
     private Set<Transaction> transactions;
 
     @OneToMany(cascade = {ALL},
-            fetch = FetchType.EAGER,
+            fetch = FetchType.LAZY,
             mappedBy = "appUser",
             orphanRemoval = true)
     @EqualsAndHashCode.Exclude

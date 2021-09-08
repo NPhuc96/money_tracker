@@ -30,7 +30,7 @@ public class InitialAuthorizationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
-        if (!request.getServletPath().equals("/api/login")) {
+        if (!request.getServletPath().equals("/api/login/**")) {
             String authorizationHeader = request.getHeader(AUTHORIZATION);
             if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
                 String token = authorizationHeader.substring("Bearer ".length());

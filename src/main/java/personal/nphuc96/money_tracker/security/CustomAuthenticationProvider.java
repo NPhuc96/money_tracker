@@ -20,21 +20,26 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     private final CustomUserDetailsService customUserDetailsService;
     private final PasswordEncoder passwordEncoder;
 
+
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String email = authentication.getName();
         String password = authentication.getCredentials().toString();
         SecurityUser securityUser = (SecurityUser) customUserDetailsService.loadUserByUsername(email);
         if (passwordEncoder.matches(password, securityUser.getPassword())) {
+            if (!securityUser.isEnabled()) {
+                log.info("User is not Enabled");
+                return new UsernamePasswordAuthenticationToken(securityUser, password);
+            }
             return new UsernamePasswordAuthenticationToken(securityUser, password, securityUser.getAuthorities());
         }
         throw new BadCredentialsException("Something went wrong");
     }
 
+
     @Override
     public boolean supports(Class<?> type) {
         return UsernamePasswordAuthenticationToken.class.isAssignableFrom(type);
     }
-
 
 }

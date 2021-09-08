@@ -1,4 +1,4 @@
-package personal.nphuc96.money_tracker.security.user.registration.model;
+package personal.nphuc96.money_tracker.security.user.registration.config;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +11,7 @@ import java.util.Properties;
 
 @Data
 @Configuration
-public class JavaMailSenderConfiguration {
+public class CustomJavaMailSender {
 
     @Value("${spring.mail.host}")
     private String host;

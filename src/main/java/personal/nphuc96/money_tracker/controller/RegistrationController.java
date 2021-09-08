@@ -26,7 +26,7 @@ public class RegistrationController {
     public ResponseEntity<?> register(@RequestBody @Valid RegistrationRequest request,
                                       BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>(validatedMethod(bindingResult), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(getError(bindingResult), HttpStatus.BAD_REQUEST);
         }
         try {
             registrationServices.register(request);
@@ -44,7 +44,7 @@ public class RegistrationController {
         return ResponseEntity.ok("confirmed");
     }
 
-    private Map<String, String> validatedMethod(BindingResult result) {
+    private Map<String, String> getError(BindingResult result) {
         Map<String, String> fieldError = new HashMap<>();
         List<FieldError> errors = result.getFieldErrors();
         for (FieldError error : errors) {

@@ -41,8 +41,8 @@ public class RegistrationService implements RegistrationServices {
 
     @Override
     public void register(RegistrationRequest request) throws MessagingException {
-        matchedPassword(request.getPassword(), request.getMatchingPassword());
-        if (!isEmailExisted(request.getEmail())) {
+        comparePassword(request.getPassword(), request.getMatchingPassword());
+        if (!emailExists(request.getEmail())) {
             throw new ResourceAlreadyExists("Email already taken");
         }
         AppUser appUser = initialAppUser(request);
@@ -55,20 +55,25 @@ public class RegistrationService implements RegistrationServices {
         confirmationTokenService.save(confirmationToken);
         log.info("Saved  {}  to database ", confirmationToken.toString());
         try {
-            mailService.send(appUser.getEmail(), confirmationToken.getToken(), expirationTime);
+            String content = mailService
+                    .buildContent(appUser.getEmail(),
+                            confirmationToken.getToken(),
+                            expirationTime);
+            mailService.send(appUser.getEmail(), content);
             log.info("Sent email to " + appUser.getEmail());
         } catch (MessagingException ex) {
             throw new MessagingException("Something went wrong");
         }
     }
 
+    //Need a fix ,  it doesnt check email
     @Override
     public void confirmToken(String token, String email) {
-        confirmationTokenService.confirmTokenProcess(token);
+        confirmationTokenService.confirmToken(token);
         enabledUser(email);
     }
 
-    private boolean isEmailExisted(String email) {
+    private boolean emailExists(String email) {
         Optional<AppUser> appUser = appUserDAO.findByEmail(email);
         return appUser.isEmpty();
     }
@@ -118,7 +123,7 @@ public class RegistrationService implements RegistrationServices {
         } else throw new ResourceNotFoundException("Not Found Email : " + email);
     }
 
-    private void matchedPassword(String pass, String matchingPassword) {
+    private void comparePassword(String pass, String matchingPassword) {
         if (!pass.equals(matchingPassword)) {
             throw new BadRequestException("Password not matched");
         }

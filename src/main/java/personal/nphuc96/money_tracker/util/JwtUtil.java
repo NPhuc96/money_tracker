@@ -17,8 +17,8 @@ import org.springframework.web.context.WebApplicationContext;
 import personal.nphuc96.money_tracker.security.user.SecurityUser;
 
 import javax.servlet.http.HttpServletRequest;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -64,11 +64,6 @@ public class JwtUtil {
         }
     }
 
-
-    public Integer getId(SecurityUser user) {
-        return user.getAppUser().getId();
-    }
-
     private DecodedJWT decodedJWT(String token) {
         JWTVerifier verifier = JWT
                 .require(getAlgorithm())
@@ -101,8 +96,10 @@ public class JwtUtil {
 
     public LocalDateTime getTokenExpiration(String token) {
         try {
-            Date date = decodedJWT(token).getExpiresAt();
-            return new Timestamp(date.getTime()).toLocalDateTime();
+            Date expiration = decodedJWT(token).getExpiresAt();
+            log.info(expiration);
+            return LocalDateTime.ofInstant(
+                    expiration.toInstant(), ZoneId.systemDefault());
         } catch (JWTDecodeException exception) {
             throw new JWTDecodeException("Failed extracting date");
         }

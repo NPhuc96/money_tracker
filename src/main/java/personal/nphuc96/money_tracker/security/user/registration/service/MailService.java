@@ -21,10 +21,9 @@ public class MailService {
     @Value("${string.client.url}")
     private String clientUrl;
 
-    public void send(String toEmail, String verifyToken, int expirationTime) throws MessagingException {
+    public void send(String toEmail, String content) throws MessagingException {
         try {
-            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-            setMimeMessageHelper(toEmail, verifyToken, expirationTime, mimeMessage);
+            MimeMessage mimeMessage = getMimeMessage(toEmail, content);
             javaMailSender.send(mimeMessage);
         } catch (MessagingException ex) {
             log.info("Error sending confirm email");
@@ -33,18 +32,23 @@ public class MailService {
 
     }
 
-    private void setMimeMessageHelper(String toEmail, String verifyToken, int expirationTime, MimeMessage mimeMessage) throws MessagingException {
+    private MimeMessage getMimeMessage(String toEmail, String content) throws MessagingException {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        setMimeMessageHelper(mimeMessage, toEmail, content);
+        return mimeMessage;
+    }
+
+    private void setMimeMessageHelper(MimeMessage mimeMessage, String toEmail, String content) throws MessagingException {
         String subject = "Please verify your registration";
         MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
         messageHelper.setFrom(fromEmail);
         messageHelper.setTo(toEmail);
         messageHelper.setSubject(subject);
-        String content = buildContent(toEmail, verifyToken, expirationTime);
         messageHelper.setText(content, true);
-
     }
 
-    private String buildContent(String email, String verifyToken, int expirationTime) {
+
+    public String buildContent(String email, String verifyToken, int expirationTime) {
         String toEmail = "&email=" + email;
         return "<div> <a href=" + clientUrl + verifyToken + toEmail + ">Verify Here</a></div>" +
                 "<div>The token will be expired within " + expirationTime + " minutes</div>";

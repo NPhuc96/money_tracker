@@ -24,7 +24,7 @@ public class TransactionDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate time;
 
-    private BigDecimal money;
+    private BigDecimal amount;
 
     private Integer groupsId;
 

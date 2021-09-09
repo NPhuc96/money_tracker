@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import personal.nphuc96.money_tracker.security.user.registration.model.MailContent;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -48,10 +49,14 @@ public class MailService {
     }
 
 
-    public String buildContent(String email, String verifyToken, int expirationTime) {
-        String toEmail = "&email=" + email;
-        return "<div> <a href=" + clientUrl + verifyToken + toEmail + ">Verify Here</a></div>" +
-                "<div>The token will be expired within " + expirationTime + " minutes</div>";
+    public String buildContent(MailContent mailContent) {
+        String to = "&email=" + mailContent.getTo();
+        return "<div> <a href=" +
+                clientUrl + mailContent.getVerifyToken() + to +
+                ">Verify Here</a></div>" +
+                "<div>The token will be expired within " +
+                mailContent.getExpirationTime() +
+                " minutes</div>";
     }
 
 }

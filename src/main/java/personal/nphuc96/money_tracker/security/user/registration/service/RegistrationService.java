@@ -14,6 +14,7 @@ import personal.nphuc96.money_tracker.exception.ResourceAlreadyExists;
 import personal.nphuc96.money_tracker.exception.ResourceNotFoundException;
 import personal.nphuc96.money_tracker.security.user.registration.RegistrationServices;
 import personal.nphuc96.money_tracker.security.user.registration.model.ConfirmationToken;
+import personal.nphuc96.money_tracker.security.user.registration.model.MailContent;
 import personal.nphuc96.money_tracker.security.user.registration.model.RegistrationRequest;
 
 import javax.mail.MessagingException;
@@ -42,27 +43,78 @@ public class RegistrationService implements RegistrationServices {
     @Override
     public void register(RegistrationRequest request) throws MessagingException {
         comparePassword(request.getPassword(), request.getMatchingPassword());
-        if (!emailExists(request.getEmail())) {
-            throw new ResourceAlreadyExists("Email already taken");
-        }
+        checkEmailExists(request.getEmail());
         AppUser appUser = initialAppUser(request);
-        log.info("Built appUser : {}", appUser.toString());
         appUserDAO.save(appUser);
         log.info("Saved  {}  to database ", appUser.toString());
-
-        ConfirmationToken confirmationToken = initialConfirmToken(appUser.getId(), randomToken());
-        log.info("Built confirmationToken : {}", confirmationToken.toString());
+        ConfirmationToken confirmationToken = initialConfirmToken(appUser.getId());
         confirmationTokenService.save(confirmationToken);
         log.info("Saved  {}  to database ", confirmationToken.toString());
+        String content = mailService
+                .buildContent(getMailContent(appUser.getEmail(), confirmationToken.getToken()));
+        sendEmail(appUser.getEmail(), content);
+        log.info("Sent email to " + appUser.getEmail());
+
+    }
+
+    private void comparePassword(String pass, String matchingPassword) {
+        if (!pass.equals(matchingPassword)) {
+            throw new BadRequestException("Password not matched");
+        }
+    }
+
+    private void checkEmailExists(String email) {
+        Optional<AppUser> appUser = appUserDAO.findByEmail(email);
+        if (appUser.isPresent()) {
+            throw new ResourceAlreadyExists("Email already taken");
+        }
+    }
+
+    private AppUser initialAppUser(RegistrationRequest request) {
+        AppUser appUser = AppUser.builder()
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .isEnabled(false)
+                .isNonLocked(false)
+                .roles(roleDAO.findByName("USER"))
+                .build();
+        log.info("Built appUser : {}", appUser.toString());
+        return appUser;
+
+    }
+
+    private ConfirmationToken initialConfirmToken(Integer userId) {
+        ConfirmationToken confirmationToken = ConfirmationToken.builder()
+                .userId(userId)
+                .token(randomToken())
+                .creationTime(LocalDateTime.now())
+                .expirationTime(LocalDateTime.now().plusMinutes(expirationTime))
+                .isConfirmed(false)
+                .confirmationTime(null)
+                .build();
+        log.info("Built confirmationToken : {}", confirmationToken.toString());
+        return confirmationToken;
+    }
+
+    private String randomToken() {
+        SecureRandom secureRandom = new SecureRandom();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < tokenLength; i++) {
+            sb.append(words.charAt(secureRandom.nextInt(words.length())));
+        }
+        log.info("Finished with the following string : {}", sb.toString());
+        return sb.toString();
+    }
+
+    private MailContent getMailContent(String to, String token) {
+        return new MailContent(to, token, expirationTime);
+    }
+
+    private void sendEmail(String email, String content) throws MessagingException {
         try {
-            String content = mailService
-                    .buildContent(appUser.getEmail(),
-                            confirmationToken.getToken(),
-                            expirationTime);
-            mailService.send(appUser.getEmail(), content);
-            log.info("Sent email to " + appUser.getEmail());
+            mailService.send(email, content);
         } catch (MessagingException ex) {
-            throw new MessagingException("Something went wrong");
+            throw new MessagingException("Server cant send email");
         }
     }
 
@@ -73,59 +125,14 @@ public class RegistrationService implements RegistrationServices {
         enabledUser(email);
     }
 
-    private boolean emailExists(String email) {
-        Optional<AppUser> appUser = appUserDAO.findByEmail(email);
-        return appUser.isEmpty();
-    }
-
-    private String randomToken() {
-
-        SecureRandom secureRandom = new SecureRandom();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < tokenLength; i++) {
-            sb.append(words.charAt(secureRandom.nextInt(words.length())));
-        }
-        log.info("Finished with the following string : {}", sb.toString());
-        return sb.toString();
-    }
-
-    private AppUser initialAppUser(RegistrationRequest request) {
-        return AppUser.builder()
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .isEnabled(false)
-                .isNonLocked(false)
-                .roles(roleDAO.findByName("USER"))
-                .build();
-    }
-
-    private ConfirmationToken initialConfirmToken(Integer userId, String token) {
-        return ConfirmationToken.builder()
-                .userId(userId)
-                .token(token)
-                .creationTime(LocalDateTime.now())
-                .expirationTime(LocalDateTime.now().plusMinutes(expirationTime))
-                .isConfirmed(false)
-                .confirmationTime(null)
-                .build();
-    }
-
     private void enabledUser(String email) {
         Optional<AppUser> appUser = appUserDAO.findByEmail(email);
 
         if (appUser.isPresent()) {
             appUser.get().setIsEnabled(true);
             appUser.get().setIsNonLocked(true);
-            log.info("Successful confirmation " +
-                            ", set enabled = {} , set non locked = {}"
-                    , appUser.get().getIsEnabled()
-                    , appUser.get().getIsNonLocked());
         } else throw new ResourceNotFoundException("Not Found Email : " + email);
     }
 
-    private void comparePassword(String pass, String matchingPassword) {
-        if (!pass.equals(matchingPassword)) {
-            throw new BadRequestException("Password not matched");
-        }
-    }
+
 }

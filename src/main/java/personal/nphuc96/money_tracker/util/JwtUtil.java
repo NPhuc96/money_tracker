@@ -97,7 +97,6 @@ public class JwtUtil {
     public LocalDateTime getTokenExpiration(String token) {
         try {
             Date expiration = decodedJWT(token).getExpiresAt();
-            log.info(expiration);
             return LocalDateTime.ofInstant(
                     expiration.toInstant(), ZoneId.systemDefault());
         } catch (JWTDecodeException exception) {

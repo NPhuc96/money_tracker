@@ -6,12 +6,12 @@ import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import personal.nphuc96.money_tracker.dto.JwtToken;
+import personal.nphuc96.money_tracker.exception.model.ExceptionResponse;
 import personal.nphuc96.money_tracker.security.user.SecurityUser;
 import personal.nphuc96.money_tracker.util.JwtUtil;
 
@@ -20,6 +20,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 
 @Log4j2
@@ -41,7 +42,7 @@ public class InitialAuthenticationFilter extends UsernamePasswordAuthenticationF
         String password = request.getParameter("password");
         log.info("Trying to access with email : {}, password : {}", email, password);
         Authentication authentication = new UsernamePasswordAuthenticationToken(email, password);
-        return checkValidAuthentication(manager.authenticate(authentication), response);
+        return checkAuthentication(manager.authenticate(authentication), response);
 
     }
 
@@ -54,9 +55,7 @@ public class InitialAuthenticationFilter extends UsernamePasswordAuthenticationF
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication auth) throws IOException, ServletException {
         SecurityUser user = (SecurityUser) auth.getPrincipal();
-
         log.info("Get SecurityUser from Authentication object : {}", user.toString());
-
         String token = jwtUtil.createToken(user, request);
         writeJsonResponse(response, new JwtToken(token, user.getAppUser().getId(), jwtUtil.getTokenExpiration(token)));
 
@@ -68,12 +67,11 @@ public class InitialAuthenticationFilter extends UsernamePasswordAuthenticationF
         super.setAuthenticationManager(authenticationManager);
     }
 
-    private Authentication checkValidAuthentication(Authentication authentication, HttpServletResponse response) throws IOException {
+    private Authentication checkAuthentication(Authentication authentication, HttpServletResponse response) throws IOException {
         if (!authentication.isAuthenticated()) {
-            response.setStatus(403);
-            writeJsonResponse(response, "Invalid User");
-            log.info("User is not authenticated");
-            throw new BadCredentialsException("Invalid User");
+            response.setStatus(400);
+            writeJsonResponse(response, new ExceptionResponse("Invalid User", "400", LocalDateTime.now()));
+
         }
         return authentication;
     }

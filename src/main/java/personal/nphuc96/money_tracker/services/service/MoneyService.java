@@ -58,16 +58,13 @@ public class MoneyService implements MoneyServices {
     public void addOrUpdate(TransactionDTO transactionDTO) {
         AppUser appUser = appUserDAO.getById(transactionDTO.getAppUserId());
         log.info("Found AppUser : {}", appUser.toString());
-
         Groups groups = groupsDAO.getById(transactionDTO.getGroupsId());
         log.info("Found Groups : {}", groups.toString());
-
         Transaction transaction = modelMapper.dtoToTransaction(transactionDTO);
         log.info("Found Transaction Before : {}", transaction.toString());
         transaction.setGroups(groups);
         transaction.setAppUser(appUser);
         log.info("Found Transaction After : {}", transaction.toString());
-
         try {
             transactionDAO.saveAndFlush(transaction);
         } catch (DataAccessException ex) {

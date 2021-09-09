@@ -45,6 +45,12 @@ public class ConfirmationTokenService {
         } else throw new ResourceNotFoundException("Invalid Token or Can Not Found");
     }
 
+    private void checkConfirmed(boolean confirmed) {
+        if (confirmed) {
+            throw new BadRequestException("Token had been used");
+        }
+    }
+
     private void checkConfirmedTime(LocalDateTime confirmTime) {
         if (confirmTime != null) {
             throw new BadRequestException("Email already confirmed");
@@ -57,9 +63,5 @@ public class ConfirmationTokenService {
         }
     }
 
-    private void checkConfirmed(boolean confirmed) {
-        if (confirmed) {
-            throw new BadRequestException("Token had been used");
-        }
-    }
+
 }

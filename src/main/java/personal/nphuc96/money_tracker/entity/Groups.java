@@ -10,17 +10,10 @@ import java.util.Set;
 
 import static javax.persistence.CascadeType.MERGE;
 import static javax.persistence.CascadeType.REFRESH;
+import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.SEQUENCE;
 
 
-/*@Table(
-        name = "groups",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "group_name_unique",
-                        columnNames = "name")
-        }
-)*/
 @Entity(name = "Group")
 @Table(name = "groups")
 @Data
@@ -28,13 +21,13 @@ public class Groups {
 
     @Id
     @SequenceGenerator(
-            name = "groups_sequence",
-            sequenceName = "groups_sequence",
+            name = "groups_seq",
+            sequenceName = "groups_seq",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = SEQUENCE,
-            generator = "groups_sequence"
+            generator = "groups_seq"
     )
     private Integer id;
 
@@ -46,12 +39,12 @@ public class Groups {
     )
     private String name;
 
-    @OneToMany(cascade = {REFRESH, MERGE}, mappedBy = "groups")
+    @OneToMany(cascade = {REFRESH, MERGE}, mappedBy = "groups", fetch = LAZY)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Set<Transaction> transactionSet;
+    private Set<Transaction> transactions;
 
-    @ManyToOne(cascade = {MERGE, REFRESH})
+    @ManyToOne(cascade = {MERGE, REFRESH}, fetch = LAZY)
     @JoinColumn(name = "app_user_id", referencedColumnName = "id", nullable = false)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude

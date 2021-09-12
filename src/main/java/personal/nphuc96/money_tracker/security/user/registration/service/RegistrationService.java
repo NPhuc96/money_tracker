@@ -25,7 +25,6 @@ import java.util.Optional;
 @Service
 @Log4j2
 @RequiredArgsConstructor
-@Transactional
 public class RegistrationService implements RegistrationServices {
 
     private final ConfirmationTokenService confirmationTokenService;
@@ -37,9 +36,10 @@ public class RegistrationService implements RegistrationServices {
     private int expirationTime;
     @Value("${mail.confirmation.token}")
     private int tokenLength;
-    @Value("${mail.confirmation.token.words}")
+    @Value("${mail.confirmation.words}")
     private String words;
 
+    @Transactional
     @Override
     public void register(RegistrationRequest request) throws MessagingException {
         comparePassword(request.getPassword(), request.getMatchingPassword());
@@ -118,6 +118,7 @@ public class RegistrationService implements RegistrationServices {
         }
     }
 
+    @Transactional
     //Need a fix ,  it doesnt check email
     @Override
     public void confirmToken(String token, String email) {
@@ -127,7 +128,6 @@ public class RegistrationService implements RegistrationServices {
 
     private void enabledUser(String email) {
         Optional<AppUser> appUser = appUserDAO.findByEmail(email);
-
         if (appUser.isPresent()) {
             appUser.get().setIsEnabled(true);
             appUser.get().setIsNonLocked(true);

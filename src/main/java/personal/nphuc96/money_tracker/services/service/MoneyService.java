@@ -15,7 +15,8 @@ import personal.nphuc96.money_tracker.dto.TransactionDTO;
 import personal.nphuc96.money_tracker.entity.Groups;
 import personal.nphuc96.money_tracker.entity.Transaction;
 import personal.nphuc96.money_tracker.entity.app_user.AppUser;
-import personal.nphuc96.money_tracker.entity.pagination.PagedTransaction;
+import personal.nphuc96.money_tracker.entity.pagination.PageRequests;
+import personal.nphuc96.money_tracker.entity.pagination.Pagination;
 import personal.nphuc96.money_tracker.exception.FailedSQLExeption;
 import personal.nphuc96.money_tracker.services.MoneyServices;
 import personal.nphuc96.money_tracker.util.ModelMapper;
@@ -40,7 +41,6 @@ public class MoneyService implements MoneyServices {
     public void addOrUpdate(GroupsDTO groupsDTO) {
         AppUser appUser = appUserDAO.getById(groupsDTO.getAppUserId());
         log.info("Found AppUser : {}", appUser.toString());
-
         Groups groups = modelMapper.dtoToGroups(groupsDTO);
         log.info("Found Groups Before : {}", groups.toString());
         groups.setAppUser(appUser);
@@ -58,7 +58,7 @@ public class MoneyService implements MoneyServices {
     public void addOrUpdate(TransactionDTO transactionDTO) {
         AppUser appUser = appUserDAO.getById(transactionDTO.getAppUserId());
         log.info("Found AppUser : {}", appUser.toString());
-        Groups groups = groupsDAO.getById(transactionDTO.getGroupsId());
+        Groups groups = groupsDAO.getById(transactionDTO.getGroups().getId());
         log.info("Found Groups : {}", groups.toString());
         Transaction transaction = modelMapper.dtoToTransaction(transactionDTO);
         log.info("Found Transaction Before : {}", transaction.toString());
@@ -104,17 +104,20 @@ public class MoneyService implements MoneyServices {
     }
 
     @Override
-    public PagedTransaction pagedTransactionByUserId(Integer pageSize, Integer currentPage, Integer userId) {
-        Pageable pageable = PageRequest.of(currentPage - 1, pageSize);
+    public Pagination findTransactionByUserId(PageRequests pageRequests) {
+        Pageable pageable = PageRequest.of(pageRequests.getPage() - 1, pageRequests.getPageSize());
         try {
-            Page<Transaction> page = transactionDAO.findTransactionByUserId(userId, pageable);
+            Page<Transaction> page = transactionDAO.findTransactionByUserId(pageRequests.getUserId(), pageable);
             List<TransactionDTO> dtos = buildTransactionDtoList(page);
-            int totalPages = page.getTotalPages();
-            return buildPagedTransaction(currentPage, totalPages, dtos);
+            return paginationOfTransaction(dtos, pageRequests, page);
         } catch (DataAccessException ex) {
             log.info(ex.getCause());
-            throw new FailedSQLExeption("Failed in fetching data with this id : " + userId);
+            throw new FailedSQLExeption("Failed in fetching data with this id : " + pageRequests.getUserId());
         }
+    }
+
+    private Pagination paginationOfTransaction(List<TransactionDTO> dtos, PageRequests pageRequests, Page<?> page) {
+        return new Pagination(dtos, pageRequests, page);
     }
 
     private List<TransactionDTO> buildTransactionDtoList(Page<Transaction> page) {
@@ -124,13 +127,5 @@ public class MoneyService implements MoneyServices {
                 .collect(Collectors.toList());
     }
 
-    private PagedTransaction buildPagedTransaction(Integer currentPage, Integer totalPages, List<TransactionDTO> dtos) {
-        return PagedTransaction.builder()
-                .currentPage(currentPage)
-                .totalPages(totalPages)
-                .prev(currentPage - 1 >= 1)
-                .next(currentPage + 1 <= totalPages)
-                .transactions(dtos)
-                .build();
-    }
+
 }

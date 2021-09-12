@@ -6,7 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import personal.nphuc96.money_tracker.dto.GroupsDTO;
 import personal.nphuc96.money_tracker.dto.TransactionDTO;
-import personal.nphuc96.money_tracker.entity.pagination.PagedTransaction;
+import personal.nphuc96.money_tracker.entity.pagination.PageRequests;
+import personal.nphuc96.money_tracker.entity.pagination.Pagination;
 import personal.nphuc96.money_tracker.services.MoneyServices;
 
 import java.util.List;
@@ -45,7 +46,6 @@ public class MoneyController {
             @PathVariable("id") Integer id) {
 
         moneyServices.deleteGroup(id, userId);
-
         return ResponseEntity.noContent().build();
     }
 
@@ -54,26 +54,19 @@ public class MoneyController {
             @PathVariable("userid") Integer userId,
             @PathVariable("id") Integer id) {
         moneyServices.deleteTransaction(id, userId);
-
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/groups")
     @ResponseBody
     public List<GroupsDTO> allGroup(@RequestParam(value = "userid") Integer userId) {
-
         return moneyServices.findGroupsByUserId(userId);
-
     }
 
-    @GetMapping("/transaction")
+    @PostMapping("/transaction")
     @ResponseBody
-    public PagedTransaction findTransactions(
-            @RequestParam(value = "size", defaultValue = "15", required = false) Integer size,
-            @RequestParam(value = "page", defaultValue = "1", required = false) Integer page,
-            @RequestParam(value = "userid") Integer userId) {
-
-        return moneyServices.pagedTransactionByUserId(size, page, userId);
+    public Pagination findTransactions(@RequestBody PageRequests pageRequests) {
+        return moneyServices.findTransactionByUserId(pageRequests);
     }
 }
 

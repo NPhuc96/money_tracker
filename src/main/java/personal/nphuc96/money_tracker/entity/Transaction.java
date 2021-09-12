@@ -11,6 +11,7 @@ import java.time.LocalDate;
 
 import static javax.persistence.CascadeType.MERGE;
 import static javax.persistence.CascadeType.REFRESH;
+import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.SEQUENCE;
 
 
@@ -21,13 +22,13 @@ public class Transaction {
 
     @Id
     @SequenceGenerator(
-            name = "transaction_sequence",
-            sequenceName = "transaction_sequence",
+            name = "transaction_seq",
+            sequenceName = "transaction_seq",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = SEQUENCE,
-            generator = "transaction_sequence"
+            generator = "transaction_seq"
 
     )
     @Column(
@@ -49,7 +50,7 @@ public class Transaction {
             nullable = false
 
     )
-    private LocalDate on;
+    private LocalDate onDate;
 
     @Column(
             name = "amount",
@@ -58,14 +59,15 @@ public class Transaction {
     private BigDecimal amount;
 
     @ManyToOne(
-            cascade = {MERGE, REFRESH}
+            cascade = {MERGE, REFRESH},
+            fetch = LAZY
     )
     @JoinColumn(name = "groups_id", referencedColumnName = "id")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Groups groups;
 
-    @ManyToOne(cascade = {MERGE, REFRESH})
+    @ManyToOne(cascade = {MERGE, REFRESH}, fetch = LAZY)
     @JoinColumn(name = "app_user_id", referencedColumnName = "id", nullable = false)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude

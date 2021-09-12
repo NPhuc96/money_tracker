@@ -40,7 +40,6 @@ public class RegistrationController {
     public ResponseEntity<?> confirm(@RequestParam("token") String token,
                                      @RequestParam("email") String email) {
         registrationServices.confirmToken(token, email);
-
         return ResponseEntity.ok("confirmed");
     }
 

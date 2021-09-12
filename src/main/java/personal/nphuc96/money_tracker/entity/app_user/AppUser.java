@@ -21,13 +21,13 @@ public class AppUser {
 
     @Id
     @SequenceGenerator(
-            name = "app_user_sequence",
-            sequenceName = "app_user_sequence",
+            name = "app_user_seq",
+            sequenceName = "app_user_seq",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = SEQUENCE,
-            generator = "app_user_sequence"
+            generator = "app_user_seq"
 
     )
     @Column(

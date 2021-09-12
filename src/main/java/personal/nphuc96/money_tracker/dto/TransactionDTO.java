@@ -22,11 +22,11 @@ public class TransactionDTO {
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate time;
+    private LocalDate onDate;
 
     private BigDecimal amount;
 
-    private Integer groupsId;
+    private GroupsDTO groups;
 
     private Integer appUserId;
 }

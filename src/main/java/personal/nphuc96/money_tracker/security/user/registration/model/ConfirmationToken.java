@@ -19,13 +19,13 @@ public class ConfirmationToken {
 
     @Id
     @SequenceGenerator(
-            name = "confirmation_token_sequence",
-            sequenceName = "confirmation_token_sequence",
+            name = "confirmation_token_seq",
+            sequenceName = "confirmation_token_seq",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = SEQUENCE,
-            generator = "confirmation_token_sequence"
+            generator = "confirmation_token_seq"
 
     )
     @Column(
@@ -55,7 +55,6 @@ public class ConfirmationToken {
 
     @Column(name = "is_confirmed")
     private Boolean isConfirmed;
-
 
     @Column(name = "app_user_id")
     private Integer userId;

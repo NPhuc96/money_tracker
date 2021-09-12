@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 public class JwtUtil {
 
     @Value("${jwt.expiration.time}")
-    private Integer expiredTime;
+    private Integer expirationTime;
 
     @Value("${jwt.signing.key}")
     private String signature;
@@ -50,7 +50,7 @@ public class JwtUtil {
         try {
             return JWT.create()
                     .withSubject(user.getUsername())
-                    .withExpiresAt(expiredTime(expiredTime))
+                    .withExpiresAt(expiredTime(expirationTime))
                     .withIssuedAt(new Date())
                     .withIssuer(request.getRequestURL().toString())
                     .withClaim("Roles",

@@ -10,7 +10,6 @@ public class GroupsDTO {
 
     private Integer id;
 
-
     private String name;
 
     private Integer appUserId;

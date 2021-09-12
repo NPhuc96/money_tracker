@@ -15,13 +15,13 @@ import static javax.persistence.GenerationType.SEQUENCE;
 public class Role {
     @Id
     @SequenceGenerator(
-            name = "role_sequence",
-            sequenceName = "role_sequence",
+            name = "role_seq",
+            sequenceName = "role_seq",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = SEQUENCE,
-            generator = "role_sequence"
+            generator = "role_seq"
 
     )
     @Column(

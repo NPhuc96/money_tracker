@@ -15,7 +15,6 @@ public class MoneyTrackerApplication {
 
     @PostConstruct
     public void init() {
-        // Setting Spring Boot SetTimeZone
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Bangkok"));
     }
 

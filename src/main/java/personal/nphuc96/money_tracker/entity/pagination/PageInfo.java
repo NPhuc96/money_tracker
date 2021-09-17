@@ -9,7 +9,6 @@ public class PageInfo {
     private Integer currentPage;
     private Integer totalPages;
     private Integer pageSize;
-    private Double lastPage;
     private Integer from;
     private Integer to;
 
@@ -18,7 +17,6 @@ public class PageInfo {
         this.totalPages = page.getTotalPages();
         this.currentPage = pageRequests.getPage();
         this.pageSize = pageRequests.getPageSize();
-        this.lastPage = lastPage(page.getTotalPages(), pageRequests.getPageSize());
         this.from = from(pageRequests.getPage(), pageRequests.getPageSize());
         this.to = to(pageRequests.getPage(), pageRequests.getPageSize(), (int) page.getTotalElements());
     }
@@ -31,7 +29,4 @@ public class PageInfo {
         return currentPage * pageSize < total ? currentPage * pageSize : total;
     }
 
-    private Double lastPage(Integer total, Integer pageSize) {
-        return Math.ceil((double) total / pageSize);
-    }
 }

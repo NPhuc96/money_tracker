@@ -116,16 +116,18 @@ public class MoneyService implements MoneyServices {
         }
     }
 
-    private Pagination paginationOfTransaction(List<TransactionDTO> dtos, PageRequests pageRequests, Page<?> page) {
-        return new Pagination(dtos, pageRequests, page);
-    }
-
     private List<TransactionDTO> buildTransactionDtoList(Page<Transaction> page) {
         return page.getContent()
                 .stream()
                 .map(modelMapper::transactionToDTO)
                 .collect(Collectors.toList());
     }
+
+    private Pagination paginationOfTransaction(List<TransactionDTO> dtos, PageRequests pageRequests, Page<?> page) {
+        return new Pagination(dtos, pageRequests, page);
+    }
+
+
 
 
 }

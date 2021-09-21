@@ -22,5 +22,7 @@ public interface MoneyServices {
 
     Pagination findTransactionByUserId(PageRequests pageRequests);
 
+    TransactionDTO findTransaction(Integer id, Integer userId);
+
 
 }

@@ -28,5 +28,5 @@ public class TransactionDTO {
 
     private GroupsDTO groups;
 
-    private Integer appUserId;
+    private Integer userId;
 }

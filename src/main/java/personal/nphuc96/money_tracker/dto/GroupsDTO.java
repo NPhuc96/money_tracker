@@ -12,7 +12,7 @@ public class GroupsDTO {
 
     private String name;
 
-    private Integer appUserId;
+    private Integer userId;
 
     //icon
 }

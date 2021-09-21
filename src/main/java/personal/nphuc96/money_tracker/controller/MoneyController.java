@@ -16,7 +16,7 @@ import java.util.List;
 @Log4j2
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("/api")
 public class MoneyController {
 
     private final MoneyServices moneyServices;
@@ -57,16 +57,23 @@ public class MoneyController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/groups")
+    @PostMapping("/groups")
     @ResponseBody
-    public List<GroupsDTO> allGroup(@RequestParam(value = "userid") Integer userId) {
+    public List<GroupsDTO> findGroups(@RequestParam(value = "userid") Integer userId) {
         return moneyServices.findGroupsByUserId(userId);
+    }
+
+    @PostMapping("/transactions")
+    @ResponseBody
+    public Pagination findTransactions(@RequestBody PageRequests pageRequests) {
+        return moneyServices.findTransactionByUserId(pageRequests);
     }
 
     @PostMapping("/transaction")
     @ResponseBody
-    public Pagination findTransactions(@RequestBody PageRequests pageRequests) {
-        return moneyServices.findTransactionByUserId(pageRequests);
+    public TransactionDTO findTransaction(@RequestParam("id") Integer id,
+                                          @RequestParam("userid") Integer userId){
+        return moneyServices.findTransaction(id, userId);
     }
 }
 

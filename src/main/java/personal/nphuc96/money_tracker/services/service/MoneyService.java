@@ -39,7 +39,7 @@ public class MoneyService implements MoneyServices {
 
     @Override
     public void addOrUpdate(GroupsDTO groupsDTO) {
-        AppUser appUser = appUserDAO.getById(groupsDTO.getAppUserId());
+        AppUser appUser = appUserDAO.getById(groupsDTO.getUserId());
         log.info("Found AppUser : {}", appUser.toString());
         Groups groups = modelMapper.dtoToGroups(groupsDTO);
         log.info("Found Groups Before : {}", groups.toString());
@@ -56,7 +56,7 @@ public class MoneyService implements MoneyServices {
 
     @Override
     public void addOrUpdate(TransactionDTO transactionDTO) {
-        AppUser appUser = appUserDAO.getById(transactionDTO.getAppUserId());
+        AppUser appUser = appUserDAO.getById(transactionDTO.getUserId());
         log.info("Found AppUser : {}", appUser.toString());
         Groups groups = groupsDAO.getById(transactionDTO.getGroups().getId());
         log.info("Found Groups : {}", groups.toString());
@@ -114,6 +114,17 @@ public class MoneyService implements MoneyServices {
             log.info(ex.getCause());
             throw new FailedSQLExeption("Failed in fetching data with this id : " + pageRequests.getUserId());
         }
+    }
+
+    @Override
+    public TransactionDTO findTransaction(Integer id, Integer userId) {
+        try{
+            Transaction transaction = transactionDAO.findTransactionById(id, userId);
+            return modelMapper.transactionToDTO(transaction);
+        }catch (DataAccessException ex){
+            throw new FailedSQLExeption("Failed in fetching data with this id : "+id);
+        }
+
     }
 
     private List<TransactionDTO> buildTransactionDtoList(Page<Transaction> page) {

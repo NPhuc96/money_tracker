@@ -40,11 +40,8 @@ public class MoneyService implements MoneyServices {
     @Override
     public void addOrUpdate(GroupsDTO groupsDTO) {
         AppUser appUser = appUserDAO.getById(groupsDTO.getUserId());
-        log.info("Found AppUser : {}", appUser.toString());
         Groups groups = modelMapper.dtoToGroups(groupsDTO);
-        log.info("Found Groups Before : {}", groups.toString());
         groups.setAppUser(appUser);
-        log.info("Found Groups After : {}", groups.toString());
         groups.setName(capitalize(groups.getName()));
         try {
             groupsDAO.saveAndFlush(groups);
@@ -57,14 +54,11 @@ public class MoneyService implements MoneyServices {
     @Override
     public void addOrUpdate(TransactionDTO transactionDTO) {
         AppUser appUser = appUserDAO.getById(transactionDTO.getUserId());
-        log.info("Found AppUser : {}", appUser.toString());
-        Groups groups = groupsDAO.getById(transactionDTO.getGroups().getId());
-        log.info("Found Groups : {}", groups.toString());
         Transaction transaction = modelMapper.dtoToTransaction(transactionDTO);
-        log.info("Found Transaction Before : {}", transaction.toString());
-        transaction.setGroups(groups);
+        if(transaction.getGroups() !=null){
+            transaction.getGroups().setAppUser(appUser);
+        }
         transaction.setAppUser(appUser);
-        log.info("Found Transaction After : {}", transaction.toString());
         try {
             transactionDAO.saveAndFlush(transaction);
         } catch (DataAccessException ex) {
@@ -95,21 +89,31 @@ public class MoneyService implements MoneyServices {
     }
 
     @Override
-    public List<GroupsDTO> findGroupsByUserId(Integer userId) {
+    public List<GroupsDTO> findGroups(Integer userId) {
         List<Groups> groupsList =
-                groupsDAO.findGroupsByUserId(userId);
+                groupsDAO.findGroups(userId);
         return groupsList
                 .stream().map(modelMapper::groupsToDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Pagination findTransactionByUserId(PageRequests pageRequests) {
+    public GroupsDTO findGroup(Integer id, Integer userId) {
+        try{
+            Groups groups = groupsDAO.findGroup(id, userId);
+            return modelMapper.groupsToDto(groups);
+        }catch (DataAccessException ex){
+            throw new FailedSQLExeption("Failed in fetching data with this id : "+id);
+        }
+    }
+
+    @Override
+    public Pagination findTransactions(PageRequests pageRequests) {
         Pageable pageable = PageRequest.of(pageRequests.getPage() - 1, pageRequests.getPageSize());
         try {
-            Page<Transaction> page = transactionDAO.findTransactionByUserId(pageRequests.getUserId(), pageable);
+            Page<Transaction> page = transactionDAO.findTransactions(pageRequests.getUserId(), pageable);
             List<TransactionDTO> dtos = buildTransactionDtoList(page);
-            return paginationOfTransaction(dtos, pageRequests, page);
+            return buildPagination(dtos, pageRequests, page);
         } catch (DataAccessException ex) {
             log.info(ex.getCause());
             throw new FailedSQLExeption("Failed in fetching data with this id : " + pageRequests.getUserId());
@@ -119,7 +123,7 @@ public class MoneyService implements MoneyServices {
     @Override
     public TransactionDTO findTransaction(Integer id, Integer userId) {
         try{
-            Transaction transaction = transactionDAO.findTransactionById(id, userId);
+            Transaction transaction = transactionDAO.findTransaction(id, userId);
             return modelMapper.transactionToDTO(transaction);
         }catch (DataAccessException ex){
             throw new FailedSQLExeption("Failed in fetching data with this id : "+id);
@@ -134,7 +138,7 @@ public class MoneyService implements MoneyServices {
                 .collect(Collectors.toList());
     }
 
-    private Pagination paginationOfTransaction(List<TransactionDTO> dtos, PageRequests pageRequests, Page<?> page) {
+    private Pagination buildPagination(List<TransactionDTO> dtos, PageRequests pageRequests, Page<?> page) {
         return new Pagination(dtos, pageRequests, page);
     }
 

@@ -18,9 +18,11 @@ public interface MoneyServices {
 
     void deleteTransaction(Integer id, Integer userId);
 
-    List<GroupsDTO> findGroupsByUserId(Integer userId);
+    List<GroupsDTO> findGroups(Integer userId);
 
-    Pagination findTransactionByUserId(PageRequests pageRequests);
+    GroupsDTO findGroup(Integer id, Integer userId);
+
+    Pagination findTransactions(PageRequests pageRequests);
 
     TransactionDTO findTransaction(Integer id, Integer userId);
 

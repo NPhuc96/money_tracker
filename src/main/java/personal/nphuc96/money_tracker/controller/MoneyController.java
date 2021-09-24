@@ -60,13 +60,13 @@ public class MoneyController {
     @PostMapping("/groups")
     @ResponseBody
     public List<GroupsDTO> findGroups(@RequestParam(value = "userid") Integer userId) {
-        return moneyServices.findGroupsByUserId(userId);
+        return moneyServices.findGroups(userId);
     }
 
     @PostMapping("/transactions")
     @ResponseBody
     public Pagination findTransactions(@RequestBody PageRequests pageRequests) {
-        return moneyServices.findTransactionByUserId(pageRequests);
+        return moneyServices.findTransactions(pageRequests);
     }
 
     @PostMapping("/transaction")
@@ -74,6 +74,12 @@ public class MoneyController {
     public TransactionDTO findTransaction(@RequestParam("id") Integer id,
                                           @RequestParam("userid") Integer userId){
         return moneyServices.findTransaction(id, userId);
+    }
+    @PostMapping("/group")
+    @ResponseBody
+    public GroupsDTO findGroup(@RequestParam("id") Integer id,
+                               @RequestParam("userid") Integer userId){
+        return moneyServices.findGroup(id, userId);
     }
 }
 

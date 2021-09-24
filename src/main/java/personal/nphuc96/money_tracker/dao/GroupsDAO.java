@@ -13,7 +13,10 @@ import java.util.List;
 public interface GroupsDAO extends JpaRepository<Groups, Integer> {
 
     @Query(value = "Select g from Group g where g.appUser.id=?1 order by g.name  ")
-    List<Groups> findGroupsByUserId(Integer userId);
+    List<Groups> findGroups(Integer userId);
+
+    @Query(value = "select g from Group g where g.id=?1 and g.appUser.id =?2")
+    Groups findGroup(Integer id, Integer userId);
 
     @Transactional
     @Modifying

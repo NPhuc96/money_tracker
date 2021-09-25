@@ -40,19 +40,18 @@ public class MoneyController {
         return ResponseEntity.ok("Successful");
     }
 
-    @DeleteMapping("/group/delete/{userid}/{id}")
+    @DeleteMapping("/group/delete")
     public ResponseEntity<?> deleteTransactionGroup(
-            @PathVariable("userid") Integer userId,
-            @PathVariable("id") Integer id) {
-
+            @RequestParam("id") Integer id,
+            @RequestParam("userid") Integer userId) {
         moneyServices.deleteGroup(id, userId);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/transaction/delete/{userid}/{id}")
+    @DeleteMapping("/transaction/delete")
     public ResponseEntity<?> deleteTransaction(
-            @PathVariable("userid") Integer userId,
-            @PathVariable("id") Integer id) {
+            @RequestParam("id") Integer id,
+            @RequestParam("userid") Integer userId) {
         moneyServices.deleteTransaction(id, userId);
         return ResponseEntity.noContent().build();
     }

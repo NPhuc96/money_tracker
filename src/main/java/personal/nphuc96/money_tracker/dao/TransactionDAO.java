@@ -24,7 +24,7 @@ public interface TransactionDAO extends JpaRepository<Transaction, Integer> {
     @Transactional
     @Modifying
     @Query(value="Update Transaction t set t.groups=null where t.groups.id=?1 ")
-    void findTransactionByGroupsId(Integer groupId);
+    void updateTransactionByGroupsId(Integer groupId);
 
     @Transactional
     @Modifying

@@ -14,7 +14,8 @@ import static javax.persistence.GenerationType.SEQUENCE;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "confirmation_token")
+@Entity(name = "ConfirmationToken")
+@Table(name = "confirmation_token")
 public class ConfirmationToken {
 
     @Id

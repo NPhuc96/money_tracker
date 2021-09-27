@@ -50,9 +50,9 @@ public class MailService {
 
 
     public String buildContent(MailContent mailContent) {
-        String to = "&email=" + mailContent.getTo();
+        String userId = "&userId=" + mailContent.getUserId();
         return "<div> <a target=\"_blank\" href=" +
-                clientUrl + mailContent.getVerifyToken() + to + ">Verify Here</a></div>" +
+                clientUrl + mailContent.getVerifyToken() + userId + ">Verify Here</a></div>" +
                 "<div>The token will be expired within " +
                 mailContent.getExpirationTime() +
                 " minutes</div>";

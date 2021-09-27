@@ -31,10 +31,12 @@ public class ConfirmationTokenService {
         }
     }
 
-    public void confirmToken(String token) {
-        Optional<ConfirmationToken> temp = confirmationTokenDAO.findByToken(token);
+    public void confirmToken(String token,Integer userId) {
+        log.info(userId);
+        log.info(token);
+        Optional<ConfirmationToken> temp = confirmationTokenDAO.findByTokenAndUserId(token,userId);
+        log.info(temp);
         if (temp.isPresent()) {
-            log.info("Found temp confirmationToken : {} ", temp.get().toString());
             ConfirmationToken confirmationToken = temp.get();
             checkConfirmed(confirmationToken.getIsConfirmed());
             checkConfirmedTime(confirmationToken.getConfirmationTime());
@@ -42,7 +44,7 @@ public class ConfirmationTokenService {
             confirmationToken.setConfirmationTime(LocalDateTime.now());
             confirmationToken.setIsConfirmed(true);
             confirmationTokenDAO.save(confirmationToken);
-        } else throw new ResourceNotFoundException("Invalid Token or Can Not Found");
+        } else throw new ResourceNotFoundException("Invalid Token");
     }
 
     private void checkConfirmed(boolean confirmed) {

@@ -10,6 +10,6 @@ import java.util.Optional;
 @Repository
 public interface AppUserDAO extends JpaRepository<AppUser, Integer> {
 
-    @Query("SELECT u from AppUser u join fetch u.roles")
+    @Query("SELECT u from AppUser u join fetch u.roles where u.email = ?1")
     Optional<AppUser> findByEmail(String email);
 }

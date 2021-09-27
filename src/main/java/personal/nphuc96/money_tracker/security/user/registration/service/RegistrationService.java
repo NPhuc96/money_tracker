@@ -46,12 +46,10 @@ public class RegistrationService implements RegistrationServices {
         checkEmailExists(request.getEmail());
         AppUser appUser = initialAppUser(request);
         appUserDAO.save(appUser);
-        log.info("Saved  {}  to database ", appUser.toString());
         ConfirmationToken confirmationToken = initialConfirmToken(appUser.getId());
         confirmationTokenService.save(confirmationToken);
-        log.info("Saved  {}  to database ", confirmationToken.toString());
         String content = mailService
-                .buildContent(getMailContent(appUser.getEmail(), confirmationToken.getToken()));
+                .buildContent(getMailContent(appUser.getId(), confirmationToken.getToken()));
         sendEmail(appUser.getEmail(), content);
         log.info("Sent email to " + appUser.getEmail());
 
@@ -106,8 +104,8 @@ public class RegistrationService implements RegistrationServices {
         return sb.toString();
     }
 
-    private MailContent getMailContent(String to, String token) {
-        return new MailContent(to, token, expirationTime);
+    private MailContent getMailContent(Integer userId, String token) {
+        return new MailContent(userId, token, expirationTime);
     }
 
     private void sendEmail(String email, String content) throws MessagingException {
@@ -119,19 +117,18 @@ public class RegistrationService implements RegistrationServices {
     }
 
     @Transactional
-    //Need a fix ,  it doesnt check email
     @Override
-    public void confirmToken(String token, String email) {
-        confirmationTokenService.confirmToken(token);
-        enabledUser(email);
+    public void confirmToken(String token, Integer userId) {
+        confirmationTokenService.confirmToken(token,userId);
+        enabledUser(userId);
     }
 
-    private void enabledUser(String email) {
-        Optional<AppUser> appUser = appUserDAO.findByEmail(email);
+    private void enabledUser(Integer userId) {
+        Optional<AppUser> appUser = appUserDAO.findById(userId);
         if (appUser.isPresent()) {
             appUser.get().setIsEnabled(true);
             appUser.get().setIsNonLocked(true);
-        } else throw new ResourceNotFoundException("Not Found Email : " + email);
+        } else throw new ResourceNotFoundException("Not Found Id : " + userId);
     }
 
 

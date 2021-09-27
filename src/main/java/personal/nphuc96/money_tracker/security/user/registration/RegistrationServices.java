@@ -8,6 +8,6 @@ public interface RegistrationServices {
 
     void register(RegistrationRequest request) throws MessagingException;
 
-    void confirmToken(String token, String email);
+    void confirmToken(String token, Integer userId);
 
 }

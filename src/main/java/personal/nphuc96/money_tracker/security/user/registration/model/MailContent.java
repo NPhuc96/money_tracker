@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class MailContent {
-    private String to;
+    private Integer userId;
     private String verifyToken;
     private int expirationTime;
 }

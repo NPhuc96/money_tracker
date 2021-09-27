@@ -71,7 +71,7 @@ public class MoneyService implements MoneyServices {
     @Override
     public void deleteGroup(Integer id, Integer userId) {
         try {
-            transactionDAO.findTransactionByGroupsId(id);
+            transactionDAO.updateTransactionByGroupsId(id);
             groupsDAO.deleteByIdAndUserId(id, userId);
         } catch (DataAccessException ex) {
             log.info(ex.getCause());

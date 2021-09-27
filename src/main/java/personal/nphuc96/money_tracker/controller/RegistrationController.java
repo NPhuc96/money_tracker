@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping(path = "api/registration")
+@RequestMapping(path = "/api/registration")
 @AllArgsConstructor
 public class RegistrationController {
 
@@ -36,10 +36,10 @@ public class RegistrationController {
         return ResponseEntity.ok("A confirmation email has been sent to your email");
     }
 
-    @PostMapping(path = "/confirm")
+    @PostMapping("/confirm")
     public ResponseEntity<?> confirm(@RequestParam("token") String token,
-                                     @RequestParam("email") String email) {
-        registrationServices.confirmToken(token, email);
+                                     @RequestParam("userId") Integer userId) {
+        registrationServices.confirmToken(token, userId);
         return ResponseEntity.ok("confirmed");
     }
 

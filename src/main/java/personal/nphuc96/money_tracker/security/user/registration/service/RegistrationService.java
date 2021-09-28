@@ -119,7 +119,7 @@ public class RegistrationService implements RegistrationServices {
     @Transactional
     @Override
     public void confirmToken(String token, Integer userId) {
-        confirmationTokenService.confirmToken(token,userId);
+        confirmationTokenService.confirmToken(token, userId);
         enabledUser(userId);
     }
 

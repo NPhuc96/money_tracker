@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface ConfirmationTokenDAO extends JpaRepository<ConfirmationToken, Integer> {
 
-    @Query(value ="select t from ConfirmationToken t where t.token=?1 and t.userId =?2")
+    @Query(value = "select t from ConfirmationToken t where t.token=?1 and t.userId =?2")
     Optional<ConfirmationToken> findByTokenAndUserId(String token, Integer userId);
 
     void deleteByToken(String token);

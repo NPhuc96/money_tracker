@@ -7,10 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import personal.nphuc96.money_tracker.entity.Groups;
 import personal.nphuc96.money_tracker.entity.Transaction;
-
-import java.util.List;
 
 @Repository
 public interface TransactionDAO extends JpaRepository<Transaction, Integer> {
@@ -18,12 +15,12 @@ public interface TransactionDAO extends JpaRepository<Transaction, Integer> {
     @Query(value = "SELECT t FROM Transaction t where t.appUser.id =?1  order by t.id desc")
     Page<Transaction> findTransactions(Integer userId, Pageable pageable);
 
-    @Query(value ="Select t from Transaction  t where t.id=?1 and t.appUser.id=?2")
+    @Query(value = "Select t from Transaction  t where t.id=?1 and t.appUser.id=?2")
     Transaction findTransaction(Integer id, Integer userId);
 
     @Transactional
     @Modifying
-    @Query(value="Update Transaction t set t.groups=null where t.groups.id=?1 ")
+    @Query(value = "Update Transaction t set t.groups=null where t.groups.id=?1 ")
     void updateTransactionByGroupsId(Integer groupId);
 
     @Transactional

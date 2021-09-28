@@ -58,7 +58,7 @@ public class Transaction {
     )
     private BigDecimal amount;
 
-    @ManyToOne(cascade = {MERGE, REFRESH},fetch = LAZY)
+    @ManyToOne(cascade = {MERGE, REFRESH}, fetch = LAZY)
     @JoinColumn(name = "groups_id", referencedColumnName = "id")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude

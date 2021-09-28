@@ -71,13 +71,14 @@ public class MoneyController {
     @PostMapping("/transaction")
     @ResponseBody
     public TransactionDTO findTransaction(@RequestParam("id") Integer id,
-                                          @RequestParam("userid") Integer userId){
+                                          @RequestParam("userid") Integer userId) {
         return moneyServices.findTransaction(id, userId);
     }
+
     @PostMapping("/group")
     @ResponseBody
     public GroupsDTO findGroup(@RequestParam("id") Integer id,
-                               @RequestParam("userid") Integer userId){
+                               @RequestParam("userid") Integer userId) {
         return moneyServices.findGroup(id, userId);
     }
 }

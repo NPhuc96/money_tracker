@@ -55,7 +55,7 @@ public class MoneyService implements MoneyServices {
     public void addOrUpdate(TransactionDTO transactionDTO) {
         AppUser appUser = appUserDAO.getById(transactionDTO.getUserId());
         Transaction transaction = modelMapper.dtoToTransaction(transactionDTO);
-        if(transaction.getGroups() !=null){
+        if (transaction.getGroups() != null) {
             transaction.getGroups().setAppUser(appUser);
         }
         transaction.setAppUser(appUser);
@@ -100,11 +100,11 @@ public class MoneyService implements MoneyServices {
 
     @Override
     public GroupsDTO findGroup(Integer id, Integer userId) {
-        try{
+        try {
             Groups groups = groupsDAO.findGroup(id, userId);
             return modelMapper.groupsToDto(groups);
-        }catch (DataAccessException ex){
-            throw new FailedSQLExeption("Failed in fetching data with this id : "+id);
+        } catch (DataAccessException ex) {
+            throw new FailedSQLExeption("Failed in fetching data with this id : " + id);
         }
     }
 
@@ -123,11 +123,11 @@ public class MoneyService implements MoneyServices {
 
     @Override
     public TransactionDTO findTransaction(Integer id, Integer userId) {
-        try{
+        try {
             Transaction transaction = transactionDAO.findTransaction(id, userId);
             return modelMapper.transactionToDTO(transaction);
-        }catch (DataAccessException ex){
-            throw new FailedSQLExeption("Failed in fetching data with this id : "+id);
+        } catch (DataAccessException ex) {
+            throw new FailedSQLExeption("Failed in fetching data with this id : " + id);
         }
 
     }
@@ -142,8 +142,6 @@ public class MoneyService implements MoneyServices {
     private Pagination buildPagination(List<TransactionDTO> dtos, PageRequests pageRequests, Page<?> page) {
         return new Pagination(dtos, pageRequests, page);
     }
-
-
 
 
 }

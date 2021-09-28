@@ -31,10 +31,10 @@ public class ConfirmationTokenService {
         }
     }
 
-    public void confirmToken(String token,Integer userId) {
+    public void confirmToken(String token, Integer userId) {
         log.info(userId);
         log.info(token);
-        Optional<ConfirmationToken> temp = confirmationTokenDAO.findByTokenAndUserId(token,userId);
+        Optional<ConfirmationToken> temp = confirmationTokenDAO.findByTokenAndUserId(token, userId);
         log.info(temp);
         if (temp.isPresent()) {
             ConfirmationToken confirmationToken = temp.get();

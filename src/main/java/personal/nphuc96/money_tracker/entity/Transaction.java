@@ -2,6 +2,7 @@ package personal.nphuc96.money_tracker.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import personal.nphuc96.money_tracker.entity.app_user.AppUser;
 
@@ -18,7 +19,13 @@ import static javax.persistence.GenerationType.SEQUENCE;
 @Entity(name = "Transaction")
 @Data
 @Table(name = "transaction")
+@NoArgsConstructor
 public class Transaction {
+
+    public Transaction(Integer id, BigDecimal amount) {
+        this.id = id;
+        this.amount = amount;
+    }
 
     @Id
     @SequenceGenerator(
@@ -37,13 +44,11 @@ public class Transaction {
 
     )
     private Integer id;
-
     @Column(
             name = "note",
             columnDefinition = "TEXT"
     )
     private String note;
-
     @Column(
             name = "on_date",
             columnDefinition = "DATE",
@@ -51,22 +56,23 @@ public class Transaction {
 
     )
     private LocalDate onDate;
-
     @Column(
             name = "amount",
             nullable = false
     )
     private BigDecimal amount;
-
     @ManyToOne(cascade = {MERGE, REFRESH}, fetch = LAZY)
     @JoinColumn(name = "groups_id", referencedColumnName = "id")
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Groups groups;
-
     @ManyToOne(cascade = {MERGE, REFRESH}, fetch = LAZY)
     @JoinColumn(name = "app_user_id", referencedColumnName = "id", nullable = false)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private AppUser appUser;
+
+    public Transaction(BigDecimal amount) {
+        this.amount = amount;
+    }
 }

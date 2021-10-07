@@ -6,7 +6,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -22,7 +21,6 @@ import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Log4j2
 @Component
 @Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class JwtUtil {
@@ -40,9 +38,7 @@ public class JwtUtil {
     private Date expiredTime(int hours) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
-        log.info("Current time : {}", calendar.getTime());
         calendar.add(Calendar.HOUR, hours);
-        log.info("Expired time : {}", calendar.getTime());
         return calendar.getTime();
     }
 

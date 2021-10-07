@@ -17,10 +17,10 @@ import personal.nphuc96.money_tracker.dto.reports.ReportResponse;
 import personal.nphuc96.money_tracker.entity.Groups;
 import personal.nphuc96.money_tracker.entity.Transaction;
 import personal.nphuc96.money_tracker.entity.app_user.AppUser;
-import personal.nphuc96.money_tracker.entity.pagination.PageRequests;
-import personal.nphuc96.money_tracker.entity.pagination.Pagination;
 import personal.nphuc96.money_tracker.exception.FailedSQLExeption;
 import personal.nphuc96.money_tracker.services.TransactionServices;
+import personal.nphuc96.money_tracker.services.service.pagination.PageRequests;
+import personal.nphuc96.money_tracker.services.service.pagination.Pagination;
 import personal.nphuc96.money_tracker.util.DateUtil;
 import personal.nphuc96.money_tracker.util.ModelMapper;
 import personal.nphuc96.money_tracker.util.StringUtil;
@@ -144,32 +144,36 @@ public class TransactionService implements TransactionServices {
     public ReportResponse findReport(ReportRequest request) {
         List<String> dates = dateUtil.getWeeks(request.getMonth(), request.getYear());
         Map<LocalDate, LocalDate> rangeOfTime = stringUtil.rangeOfTime(dates, request.getYear());
-        List<BigDecimal> amountOfWeek = getAmount(rangeOfTime, request.getUserId());
-        BigDecimal spentOfMonth = amountOfMonth(amountOfWeek);
-        return new ReportResponse(dates, amountOfWeek, spentOfMonth);
+        List<BigDecimal> spentOfWeek = spentOfWeeks(rangeOfTime, request.getUserId());
+        BigDecimal spentOfMonth = spentOfMonth(spentOfWeek);
+        return new ReportResponse(dates, spentOfWeek, spentOfMonth);
     }
 
-    private List<BigDecimal> getAmount(Map<LocalDate, LocalDate> rangeOfTime, Integer userId) {
+    private List<BigDecimal> spentOfWeeks(Map<LocalDate, LocalDate> rangeOfTime, Integer userId) {
         List<BigDecimal> amountOfWeek = new ArrayList<>();
         for (var dates : rangeOfTime.entrySet()) {
-            amountOfWeek.add(amountOfWeek(dates, userId));
+            amountOfWeek.add(spentOfWeek(dates, userId));
         }
         return amountOfWeek;
     }
 
-    private BigDecimal amountOfWeek(Map.Entry<LocalDate, LocalDate> dates, Integer userId) {
-        List<Transaction> amounts = transactionDAO
-                .findAmountByDate(dates.getKey(), dates.getValue(), userId);
-        BigDecimal amount = BigDecimal.ZERO;
-        for (Transaction t : amounts) {
-            amount = amount.add(t.getAmount());
+    private BigDecimal spentOfWeek(Map.Entry<LocalDate, LocalDate> dates, Integer userId) {
+        try {
+            List<Transaction> amounts = transactionDAO
+                    .findAmountByDate(dates.getKey(), dates.getValue(), userId);
+            BigDecimal amount = BigDecimal.ZERO;
+            for (Transaction t : amounts) {
+                amount = amount.add(t.getAmount());
+            }
+            return amount;
+        } catch (FailedSQLExeption ex) {
+            throw new FailedSQLExeption("Error fetching data");
         }
-        return amount;
     }
 
-    private BigDecimal amountOfMonth(List<BigDecimal> amountOfWeek) {
+    private BigDecimal spentOfMonth(List<BigDecimal> spentOfWeek) {
         BigDecimal amountOfMonth = BigDecimal.ZERO;
-        for (BigDecimal amount : amountOfWeek) {
+        for (BigDecimal amount : spentOfWeek) {
             amountOfMonth = amountOfMonth.add(amount);
         }
         return amountOfMonth;

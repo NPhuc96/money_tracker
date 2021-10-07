@@ -13,20 +13,20 @@ public class StringUtil {
     public Map<LocalDate, LocalDate> rangeOfTime(List<String> dates, int year) {
         Map<LocalDate, LocalDate> rot = new LinkedHashMap<>();
         for (String date : dates) {
-            String[] splitDash = splitDashString(date);
-            int[] firstSplit = splitStickString(splitDash[0]);
-            int[] secondSplit = splitStickString(splitDash[1]);
+            String[] splitDash = splitDash(date);
+            int[] firstSplit = splitStick(splitDash[0]);
+            int[] secondSplit = splitStick(splitDash[1]);
             rot.put(LocalDate.of(year, firstSplit[1], firstSplit[0]),
                     LocalDate.of(year, secondSplit[1], secondSplit[0]));
         }
         return rot;
     }
 
-    private String[] splitDashString(String date) {
+    private String[] splitDash(String date) {
         return date.split("-");
     }
 
-    private int[] splitStickString(String date) {
+    private int[] splitStick(String date) {
         String[] split = date.split("/");
         int[] dates = new int[split.length];
         for (int i = 0; i < dates.length; i++) {

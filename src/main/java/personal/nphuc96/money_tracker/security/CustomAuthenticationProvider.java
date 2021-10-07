@@ -1,7 +1,6 @@
 package personal.nphuc96.money_tracker.security;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,7 +13,6 @@ import personal.nphuc96.money_tracker.security.user.SecurityUser;
 
 @Component
 @RequiredArgsConstructor
-@Log4j2
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     private final CustomUserDetailsService customUserDetailsService;

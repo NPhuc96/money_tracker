@@ -44,7 +44,7 @@ public class DateUtil {
     }
 
     private int getRemainDate(YearMonth date) {
-        return date.getMonthValue() % 4;
+        return date.lengthOfMonth() % 4;
     }
 }
 

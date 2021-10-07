@@ -1,41 +1,34 @@
 package personal.nphuc96.money_tracker.security.user.registration.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import personal.nphuc96.money_tracker.dao.user.ConfirmationTokenDAO;
+import personal.nphuc96.money_tracker.entity.app_user.ConfirmationToken;
 import personal.nphuc96.money_tracker.exception.BadRequestException;
 import personal.nphuc96.money_tracker.exception.ResourceNotFoundException;
-import personal.nphuc96.money_tracker.security.user.registration.model.ConfirmationToken;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Log4j2
 public class ConfirmationTokenService {
 
     private final ConfirmationTokenDAO confirmationTokenDAO;
 
     public void save(ConfirmationToken token) {
         confirmationTokenDAO.save(token);
-        log.info("Saved Token : {}", token);
     }
 
 
-    public void deleteConfirmedToken(ConfirmationToken token) {
+   /* public void deleteConfirmedToken(ConfirmationToken token) {
         if (token.getIsConfirmed()) {
             confirmationTokenDAO.deleteByToken(token.getToken());
-            log.info("Delete token object {}", token.toString());
         }
-    }
+    }*/
 
     public void confirmToken(String token, Integer userId) {
-        log.info(userId);
-        log.info(token);
         Optional<ConfirmationToken> temp = confirmationTokenDAO.findByTokenAndUserId(token, userId);
-        log.info(temp);
         if (temp.isPresent()) {
             ConfirmationToken confirmationToken = temp.get();
             checkConfirmed(confirmationToken.getIsConfirmed());

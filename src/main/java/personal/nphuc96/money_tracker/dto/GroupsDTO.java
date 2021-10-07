@@ -13,6 +13,4 @@ public class GroupsDTO {
     private String name;
 
     private Integer userId;
-
-    //icon
 }

@@ -22,11 +22,6 @@ import static javax.persistence.GenerationType.SEQUENCE;
 @NoArgsConstructor
 public class Transaction {
 
-    public Transaction(Integer id, BigDecimal amount) {
-        this.id = id;
-        this.amount = amount;
-    }
-
     @Id
     @SequenceGenerator(
             name = "transaction_seq",
@@ -71,6 +66,10 @@ public class Transaction {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private AppUser appUser;
+    public Transaction(Integer id, BigDecimal amount) {
+        this.id = id;
+        this.amount = amount;
+    }
 
     public Transaction(BigDecimal amount) {
         this.amount = amount;

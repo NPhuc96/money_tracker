@@ -1,7 +1,6 @@
 package personal.nphuc96.money_tracker.security;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -20,9 +19,7 @@ import personal.nphuc96.money_tracker.util.JwtUtil;
 @EnableWebSecurity
 @Configuration
 @AllArgsConstructor
-@Log4j2
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
 
     private final CustomAuthenticationProvider customAuthenticationProvider;
     private final JwtUtil jwtUtil;
@@ -49,8 +46,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) {
         web.ignoring()
                 .antMatchers("/api/registration/**");
-
-
     }
 
     @Override

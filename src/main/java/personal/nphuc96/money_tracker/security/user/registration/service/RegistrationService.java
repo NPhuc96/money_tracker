@@ -1,7 +1,6 @@
 package personal.nphuc96.money_tracker.security.user.registration.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -9,11 +8,11 @@ import org.springframework.transaction.annotation.Transactional;
 import personal.nphuc96.money_tracker.dao.user.AppUserDAO;
 import personal.nphuc96.money_tracker.dao.user.RoleDAO;
 import personal.nphuc96.money_tracker.entity.app_user.AppUser;
+import personal.nphuc96.money_tracker.entity.app_user.ConfirmationToken;
 import personal.nphuc96.money_tracker.exception.BadRequestException;
 import personal.nphuc96.money_tracker.exception.ResourceAlreadyExists;
 import personal.nphuc96.money_tracker.exception.ResourceNotFoundException;
 import personal.nphuc96.money_tracker.security.user.registration.RegistrationServices;
-import personal.nphuc96.money_tracker.security.user.registration.model.ConfirmationToken;
 import personal.nphuc96.money_tracker.security.user.registration.model.MailContent;
 import personal.nphuc96.money_tracker.security.user.registration.model.RegistrationRequest;
 
@@ -23,7 +22,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
-@Log4j2
 @RequiredArgsConstructor
 public class RegistrationService implements RegistrationServices {
 
@@ -51,7 +49,6 @@ public class RegistrationService implements RegistrationServices {
         String content = mailService
                 .buildContent(getMailContent(appUser.getId(), confirmationToken.getToken()));
         sendEmail(appUser.getEmail(), content);
-        log.info("Sent email to " + appUser.getEmail());
 
     }
 
@@ -69,20 +66,18 @@ public class RegistrationService implements RegistrationServices {
     }
 
     private AppUser initialAppUser(RegistrationRequest request) {
-        AppUser appUser = AppUser.builder()
+        return AppUser.builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .isEnabled(false)
                 .isNonLocked(false)
                 .roles(roleDAO.findByName("USER"))
                 .build();
-        log.info("Built appUser : {}", appUser.toString());
-        return appUser;
 
     }
 
     private ConfirmationToken initialConfirmToken(Integer userId) {
-        ConfirmationToken confirmationToken = ConfirmationToken.builder()
+        return ConfirmationToken.builder()
                 .userId(userId)
                 .token(randomToken())
                 .creationTime(LocalDateTime.now())
@@ -90,8 +85,6 @@ public class RegistrationService implements RegistrationServices {
                 .isConfirmed(false)
                 .confirmationTime(null)
                 .build();
-        log.info("Built confirmationToken : {}", confirmationToken.toString());
-        return confirmationToken;
     }
 
     private String randomToken() {
@@ -100,7 +93,6 @@ public class RegistrationService implements RegistrationServices {
         for (int i = 0; i < tokenLength; i++) {
             sb.append(words.charAt(secureRandom.nextInt(words.length())));
         }
-        log.info("Finished with the following string : {}", sb.toString());
         return sb.toString();
     }
 

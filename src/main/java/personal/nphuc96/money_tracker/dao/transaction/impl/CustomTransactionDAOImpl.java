@@ -1,6 +1,5 @@
-package personal.nphuc96.money_tracker.dao.transaction.service;
+package personal.nphuc96.money_tracker.dao.transaction.impl;
 
-import org.springframework.stereotype.Service;
 import personal.nphuc96.money_tracker.dao.transaction.CustomTransactionDAO;
 import personal.nphuc96.money_tracker.entity.Transaction;
 
@@ -27,7 +26,7 @@ public class CustomTransactionDAOImpl implements CustomTransactionDAO {
         Predicate fromDate = builder.greaterThanOrEqualTo(root.get("onDate"), from);
         Predicate toDate = builder.lessThanOrEqualTo(root.get("onDate"), to);
         Predicate finalPredicateForDate = builder.and(fromDate, toDate, predicateForUserId);
-        query.multiselect(root.get("id"),root.get("amount")).where(finalPredicateForDate);
+        query.multiselect(root.get("id"), root.get("amount")).where(finalPredicateForDate);
         return em.createQuery(query).getResultList();
     }
 

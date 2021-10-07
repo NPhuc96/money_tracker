@@ -1,6 +1,5 @@
 package personal.nphuc96.money_tracker.dao.transaction;
 
-import org.springframework.stereotype.Service;
 import personal.nphuc96.money_tracker.entity.Transaction;
 
 import java.time.LocalDate;

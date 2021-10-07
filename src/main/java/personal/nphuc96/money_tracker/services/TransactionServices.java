@@ -4,8 +4,8 @@ import personal.nphuc96.money_tracker.dto.GroupsDTO;
 import personal.nphuc96.money_tracker.dto.TransactionDTO;
 import personal.nphuc96.money_tracker.dto.reports.ReportRequest;
 import personal.nphuc96.money_tracker.dto.reports.ReportResponse;
-import personal.nphuc96.money_tracker.entity.pagination.PageRequests;
-import personal.nphuc96.money_tracker.entity.pagination.Pagination;
+import personal.nphuc96.money_tracker.services.service.pagination.PageRequests;
+import personal.nphuc96.money_tracker.services.service.pagination.Pagination;
 
 import java.util.List;
 

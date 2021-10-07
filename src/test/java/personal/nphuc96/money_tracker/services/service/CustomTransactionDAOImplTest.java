@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import personal.nphuc96.money_tracker.dao.transaction.TransactionDAO;
-import personal.nphuc96.money_tracker.dao.transaction.service.CustomTransactionDAOImpl;
+import personal.nphuc96.money_tracker.dao.transaction.impl.CustomTransactionDAOImpl;
 import personal.nphuc96.money_tracker.entity.Transaction;
 
 import java.time.LocalDate;

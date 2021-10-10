@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>personal.nphuc96</groupId>
-    <artifactId>money_tracker</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>money_tracker</name>
-    <description>Money tracker</description>
+    <artifactId>spring_expense</artifactId>
+    <version>0.1</version>
+    <name>spring_expense</name>
+    <description>Backend of expense app</description>
     <properties>
         <java.version>11</java.version>
     </properties>

@@ -11,7 +11,7 @@ import java.util.Map;
 @Component
 public class StringUtil {
 
-    public String randomToken(int length,String words) {
+    public String randomToken(int length, String words) {
         SecureRandom secureRandom = new SecureRandom();
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < length; i++) {

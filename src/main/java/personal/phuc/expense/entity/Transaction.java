@@ -66,6 +66,7 @@ public class Transaction {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private AppUser appUser;
+
     public Transaction(Integer id, BigDecimal amount) {
         this.id = id;
         this.amount = amount;

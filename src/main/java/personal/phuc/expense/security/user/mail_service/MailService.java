@@ -35,7 +35,7 @@ public class MailService {
 
     private MimeMessage getMimeMessage(Mail mail) throws MessagingException {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        setMimeMessageHelper(mimeMessage,mail);
+        setMimeMessageHelper(mimeMessage, mail);
         return mimeMessage;
     }
 
@@ -56,8 +56,9 @@ public class MailService {
                 registrationContent.getExpirationTime() +
                 " minutes</div>";
     }
-    public String passwordResetContent(String random){
-        return "<div> Your Verification code : "+random +" </div>";
+
+    public String passwordResetContent(String random) {
+        return "<div> Your Verification code : " + random + " </div>";
     }
 
 

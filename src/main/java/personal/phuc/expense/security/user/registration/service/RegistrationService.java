@@ -12,10 +12,10 @@ import personal.phuc.expense.exception.BadRequestException;
 import personal.phuc.expense.exception.ResourceAlreadyExists;
 import personal.phuc.expense.exception.ResourceNotFoundException;
 import personal.phuc.expense.security.user.mail_service.Mail;
+import personal.phuc.expense.security.user.mail_service.MailService;
 import personal.phuc.expense.security.user.registration.RegistrationServices;
 import personal.phuc.expense.security.user.registration.model.RegistrationContent;
 import personal.phuc.expense.security.user.registration.model.RegistrationRequest;
-import personal.phuc.expense.security.user.mail_service.MailService;
 import personal.phuc.expense.util.StringUtil;
 
 import javax.mail.MessagingException;
@@ -46,7 +46,7 @@ public class RegistrationService implements RegistrationServices {
         registrationTokenService.save(registrationToken);
         String content = mailService
                 .registrationContent(getMailContent(appUser.getId(), registrationToken.getToken()));
-        mailService.send(new Mail(appUser.getEmail(), content,subject));
+        mailService.send(new Mail(appUser.getEmail(), content, subject));
 
     }
 

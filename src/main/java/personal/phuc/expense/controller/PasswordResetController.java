@@ -33,7 +33,7 @@ public class PasswordResetController {
     @PostMapping("/confirm")
     public ResponseEntity<?> confirm(@RequestParam("code") String code,
                                      @RequestParam("email") String email) {
-        passwordResetServices.confirm(code,email);
+        passwordResetServices.confirm(code, email);
         return ResponseEntity.ok().build();
     }
 

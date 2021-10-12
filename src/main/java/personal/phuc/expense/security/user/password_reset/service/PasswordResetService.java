@@ -63,13 +63,15 @@ public class PasswordResetService implements PasswordResetServices {
             throw new FailedSQLExeption("Could not update password");
         }
     }
-    private PasswordResetCode passwordResetCode(String email,String content){
+
+    private PasswordResetCode passwordResetCode(String email, String content) {
         return PasswordResetCode.builder()
                 .email(email)
                 .code(content)
                 .isConfirmed(false)
                 .build();
     }
+
     private String buildContent() {
         return mailService.passwordResetContent(random());
     }

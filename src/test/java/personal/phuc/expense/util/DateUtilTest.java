@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @SpringBootTest
@@ -16,13 +16,13 @@ class DateUtilTest {
 
     @DisplayName("Test Output of DateUtil")
     @Test
-    void givenInputGetList(){
+    void givenInputGetList() {
         DateUtil dateUtil = new DateUtil();
         Integer month = 10;
         Integer year = 2021;
         List<String> weeks = dateUtil.getWeeks(month, year);
-        for(String week : weeks){
-           log.info(week);
+        for (String week : weeks) {
+            log.info(week);
         }
         assertEquals(4, weeks.size());
     }

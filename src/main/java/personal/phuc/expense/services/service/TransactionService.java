@@ -121,7 +121,7 @@ public class TransactionService implements TransactionServices {
     public Pagination findTransactions(PageRequests pageRequests) {
         Pageable pageable = PageRequest.of(pageRequests.getPage() - 1, pageRequests.getPageSize());
         try {
-            Page<Transaction> page = transactionDAO.findTransactions(pageRequests.getUserId(), pageable);
+            Page<Transaction> page = transactionDAO.findTransactions(pageRequests.getUserId(), pageRequests.getSortBy(), pageable);
             List<TransactionDTO> dtos = buildTransactionDtoList(page);
             return buildPagination(dtos, pageRequests, page);
         } catch (DataAccessException ex) {

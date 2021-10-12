@@ -18,33 +18,31 @@ import personal.phuc.expense.security.user.mail_service.MailService;
 import javax.mail.MessagingException;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @Log4j2
 @SpringBootTest
 class PasswordResetServicesTest {
+    private static final String EMAIL = "test@test.com";
+    private static final String PASSWORD = "$argon2id$v=19$m=4096,t=3,p=1$dUhMS1VvalZNUmdkOXhGQw$pFer1fjk/kbQlm9ZdSjgmkpm5iueQBlyic+gDhIRUIk";
+    /*    private static final String NEW_PASSWORD = "$argon2id$v=19$m=4096,t=3,p=1$dlBnZm5JVEdMMjhjOERqQw$oeMpoCSO/vN08pGPgr7t+Q";*/
+    private static final String CODE = "123456";
     @Autowired
     private PasswordResetServices services;
-
     @MockBean
     private AppUserDAO appUserDAO;
     @MockBean
     private PasswordResetDAO passwordResetDAO;
     @MockBean
     private MailService mailService;
-
-    private static final String EMAIL = "test@test.com";
-    private static final String PASSWORD = "$argon2id$v=19$m=4096,t=3,p=1$dUhMS1VvalZNUmdkOXhGQw$pFer1fjk/kbQlm9ZdSjgmkpm5iueQBlyic+gDhIRUIk";
-/*    private static final String NEW_PASSWORD = "$argon2id$v=19$m=4096,t=3,p=1$dlBnZm5JVEdMMjhjOERqQw$oeMpoCSO/vN08pGPgr7t+Q";*/
-    private static final String CODE = "123456";
-    private AppUser appUser = AppUser.builder()
+    private final AppUser appUser = AppUser.builder()
             .password(PASSWORD)
             .email(EMAIL)
             .isEnabled(true)
             .isNonLocked(true)
             .build();
-    private PasswordResetCode passwordResetCode = PasswordResetCode.builder()
+    private final PasswordResetCode passwordResetCode = PasswordResetCode.builder()
             .code(CODE)
             .email(EMAIL)
             .isConfirmed(false)
@@ -62,14 +60,14 @@ class PasswordResetServicesTest {
 
     @DisplayName("2. Failed Request")
     @Test
-    public void failedRequest()  {
+    public void failedRequest() {
         when(appUserDAO.findByEmail(EMAIL).isEmpty())
                 .thenThrow(ResourceNotFoundException.class);
     }
 
     @DisplayName("3. Successful Confirmation")
     @Test
-    public void successfulConfirmation()  {
+    public void successfulConfirmation() {
         when(appUserDAO.save(appUser)).thenReturn(appUser);
         when(passwordResetDAO.save(passwordResetCode)).thenReturn(passwordResetCode);
         when(passwordResetDAO.findByCodeAndEmail(CODE, EMAIL)).thenReturn(passwordResetCode);
@@ -84,7 +82,7 @@ class PasswordResetServicesTest {
 
     @DisplayName("4. Failed Confirmation")
     @Test
-    public void failedConfirmation()  {
+    public void failedConfirmation() {
         when(passwordResetDAO.findByCodeAndEmail("123", "321"))
                 .thenThrow(BadRequestException.class);
     }

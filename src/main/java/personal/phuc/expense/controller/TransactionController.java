@@ -14,9 +14,9 @@ import personal.phuc.expense.services.service.pagination.Pagination;
 import java.util.List;
 
 
-@AllArgsConstructor
 @RestController
 @RequestMapping("/api")
+@AllArgsConstructor
 public class TransactionController {
 
     private final TransactionServices transactionServices;

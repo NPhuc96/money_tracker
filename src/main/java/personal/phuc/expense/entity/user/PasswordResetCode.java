@@ -14,17 +14,17 @@ import static javax.persistence.GenerationType.SEQUENCE;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "PasswordResetCode")
-@Table(name = "password_reset_token")
+@Table(name = "password_reset_code")
 public class PasswordResetCode {
     @Id
     @SequenceGenerator(
-            name = "password_reset_seq",
-            sequenceName = "password_reset_seq",
+            name = "password_reset_code_seq",
+            sequenceName = "password_reset_code_seq",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = SEQUENCE,
-            generator = "password_reset_seq"
+            generator = "password_reset_code_seq"
     )
     @Column(
             name = "id",

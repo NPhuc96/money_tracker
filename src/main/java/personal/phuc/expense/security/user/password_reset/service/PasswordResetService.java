@@ -32,12 +32,13 @@ public class PasswordResetService implements PasswordResetServices {
 
     @Override
     public void requestReset(String email) throws MessagingException {
-        String subject = "Your Verification Here";
+        String subject = "Your Code Here";
         Optional<AppUser> appUser = appUserDAO.findByEmail(email);
         if (appUser.isPresent()) {
-            String code = buildContent();
+            String random = random();
+            String code = buildContent(random);
             mailService.send(new Mail(email, code, subject));
-            passwordResetDAO.save(passwordResetCode(email, random()));
+            passwordResetDAO.save(passwordResetCode(email, random));
         } else throw new ResourceNotFoundException("Email is not exists");
     }
 
@@ -72,8 +73,8 @@ public class PasswordResetService implements PasswordResetServices {
                 .build();
     }
 
-    private String buildContent() {
-        return mailService.passwordResetContent(random());
+    private String buildContent(String random) {
+        return mailService.passwordResetContent(random);
     }
 
     private String random() {

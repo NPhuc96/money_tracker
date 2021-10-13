@@ -4,8 +4,12 @@ import lombok.Data;
 
 @Data
 public class PageRequests {
+
     private Integer page;
+
     private Integer pageSize;
+
     private String sortBy;
+
     private Integer userId;
 }

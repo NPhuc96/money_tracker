@@ -20,13 +20,6 @@ public class RegistrationTokenService {
         registrationTokenDAO.save(token);
     }
 
-
-   /* public void deleteConfirmedToken(RegistrationToken token) {
-        if (token.getIsConfirmed()) {
-            confirmationTokenDAO.deleteByToken(token.getToken());
-        }
-    }*/
-
     public void confirmToken(String token, Integer userId) {
         Optional<RegistrationToken> temp = registrationTokenDAO.findByTokenAndUserId(token, userId);
         if (temp.isPresent()) {

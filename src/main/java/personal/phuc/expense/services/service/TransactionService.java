@@ -123,7 +123,7 @@ public class TransactionService implements TransactionServices {
         try {
             Page<Transaction> page = transactionDAO.findTransactions(pageRequests.getUserId(), pageRequests.getSortBy(), pageable);
             List<TransactionDTO> dtos = buildTransactionDtoList(page);
-            return buildPagination(dtos, pageRequests, page);
+            return new Pagination(dtos, pageRequests, page);
         } catch (DataAccessException ex) {
             log.info(ex.getCause());
             throw new FailedSQLExeption("Failed in fetching data with this id : " + pageRequests.getUserId());
@@ -185,10 +185,4 @@ public class TransactionService implements TransactionServices {
                 .map(modelMapper::transactionToDTO)
                 .collect(Collectors.toList());
     }
-
-    private Pagination buildPagination(List<TransactionDTO> dtos, PageRequests pageRequests, Page<?> page) {
-        return new Pagination(dtos, pageRequests, page);
-    }
-
-
 }

@@ -8,7 +8,9 @@ import java.util.List;
 
 @Data
 public class Pagination {
+
     private PageInfo pageInfo;
+
     private List<TransactionDTO> transactions;
 
     public Pagination(List<TransactionDTO> transactions, PageRequests pageRequests, Page<?> page) {

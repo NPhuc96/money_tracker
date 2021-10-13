@@ -61,6 +61,7 @@ public class Transaction {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Groups groups;
+
     @ManyToOne(cascade = {MERGE, REFRESH}, fetch = LAZY)
     @JoinColumn(name = "app_user_id", referencedColumnName = "id", nullable = false)
     @EqualsAndHashCode.Exclude
@@ -69,10 +70,6 @@ public class Transaction {
 
     public Transaction(Integer id, BigDecimal amount) {
         this.id = id;
-        this.amount = amount;
-    }
-
-    public Transaction(BigDecimal amount) {
         this.amount = amount;
     }
 }

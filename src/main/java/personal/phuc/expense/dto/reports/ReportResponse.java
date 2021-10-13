@@ -9,8 +9,11 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class ReportResponse {
+
     private List<String> weekOfMonth;
+
     private List<BigDecimal> spentOfWeek;
+
     private BigDecimal spentOfMonth;
 
 

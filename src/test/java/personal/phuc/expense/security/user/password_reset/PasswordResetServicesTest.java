@@ -24,18 +24,11 @@ import static org.mockito.Mockito.*;
 @Log4j2
 @SpringBootTest
 class PasswordResetServicesTest {
+
     private static final String EMAIL = "test@test.com";
+
     private static final String PASSWORD = "$argon2id$v=19$m=4096,t=3,p=1$dUhMS1VvalZNUmdkOXhGQw$pFer1fjk/kbQlm9ZdSjgmkpm5iueQBlyic+gDhIRUIk";
-    /*    private static final String NEW_PASSWORD = "$argon2id$v=19$m=4096,t=3,p=1$dlBnZm5JVEdMMjhjOERqQw$oeMpoCSO/vN08pGPgr7t+Q";*/
     private static final String CODE = "123456";
-    @Autowired
-    private PasswordResetServices services;
-    @MockBean
-    private AppUserDAO appUserDAO;
-    @MockBean
-    private PasswordResetDAO passwordResetDAO;
-    @MockBean
-    private MailService mailService;
     private final AppUser appUser = AppUser.builder()
             .password(PASSWORD)
             .email(EMAIL)
@@ -47,7 +40,14 @@ class PasswordResetServicesTest {
             .email(EMAIL)
             .isConfirmed(false)
             .build();
-
+    @Autowired
+    private PasswordResetServices services;
+    @MockBean
+    private AppUserDAO appUserDAO;
+    @MockBean
+    private PasswordResetDAO passwordResetDAO;
+    @MockBean
+    private MailService mailService;
 
     @DisplayName("1. Successful Request")
     @Test

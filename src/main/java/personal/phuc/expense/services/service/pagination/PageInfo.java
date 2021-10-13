@@ -5,11 +5,17 @@ import org.springframework.data.domain.Page;
 
 @Data
 public class PageInfo {
+
     private Long totalElements;
+
     private Integer currentPage;
+
     private Integer totalPages;
+
     private Integer pageSize;
+
     private Integer from;
+
     private Integer to;
 
     public PageInfo(PageRequests pageRequests, Page<?> page) {

@@ -41,12 +41,17 @@ public class CustomTransactionDAOImpl implements CustomTransactionDAO {
         Root<Transaction> root = query.from(Transaction.class);
         Predicate predicateForUserId = builder.equal(root.get("appUser").get("id"), userId);
         setOrder(sortBy, builder, query, root);
-        List<Transaction> result = transactionList(query, pageable);
         query.select(root).where(predicateForUserId);
-        CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
-        countQuery.select(builder.count(countQuery.from(Transaction.class)));
-        Long count = em.createQuery(countQuery).getSingleResult();
+        List<Transaction> result = transactionList(query, pageable);
+        Long count = getCount(builder, predicateForUserId);
         return new PageImpl<>(result, pageable, count);
+    }
+
+    private Long getCount(CriteriaBuilder builder, Predicate predicateForUserId) {
+        CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
+        Root<Transaction> longRoot = countQuery.from(Transaction.class);
+        countQuery.select(builder.count(longRoot)).where(predicateForUserId);
+        return em.createQuery(countQuery).getSingleResult();
     }
 
     private void setOrder(String sortBy, CriteriaBuilder builder,
